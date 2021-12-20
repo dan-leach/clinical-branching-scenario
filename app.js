@@ -179,18 +179,18 @@ var app = new Vue({
                     exit: function(){
                         var n = app.nodes[app.node]
                         var i = n.input
-                        var feedback = "These are the elements from the history that you missed: "
+                        var feedback = ""
                         for (var x in i.keywords){
                             if (!i.keywords[x].found) {
-                                feedback += i.keywords[x].response
+                                feedback += "'" + i.keywords[x].response + "', "
                             }
                         }
-                        var decisions = "This is the history you asked for: " + i.entry
+                        feedback = feedback.slice(0,-2) + ". "
                         app.scenario.steps.push({
                             node: app.node,
-                            decisions: decisions,
-                            notes: app.nodes[app.node].input.responses,
-                            feedback: feedback,
+                            decisions: "<i>This is the history you asked for:</i> '" + i.entry + "'.",
+                            notes: "<i>This is what you found out:</i> '" +app.nodes[app.node].input.responses + "'.",
+                            feedback: "<i>These are the elements from the history that you missed:</i> " + feedback,
                             score: n.score 
                         })
                         app.scenario.score.achieved += n.score.achieved

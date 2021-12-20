@@ -84,7 +84,7 @@
         <br>
         <hr>
         <h3>Developer Panel</h3>
-        Current node: <span class="badge bg-secondary">{{node}}</span> <button @click=goTo(node+1) class="btn btn-sm m-2 btn-warning" >Go to next node</button><br>
+        Current score: <span class="badge bg-secondary">{{scenario.score.achieved}} / {{scenario.score.possible}}</span> Current node: <span class="badge bg-secondary">{{node}}</span> <button @click=goTo(node+1) class="btn btn-sm m-2 btn-warning" >Go to next node</button><br>
         <i>{{nodes[node].comment}}</i><br>
         <br>
         <div class="card">
@@ -97,7 +97,7 @@
                     <span v-if="element.decisions"><strong>Actions:</strong> <span v-html="element.decisions"></span><br></span>
                     <span v-if="element.notes"><strong>Notes:</strong> <span v-html="element.notes"></span><br></span>
                     <span v-if="element.feedback"><strong>Feedback:</strong> <span v-html="element.feedback"></span><br></span>
-                    <span v-if="element.score"><strong>Score:</strong> {{element.score.achieved}} / {{element.score.possible}} [{{scenario.score.achieved}} / {{scenario.score.possible}}]<br></span>
+                    <span v-if="element.score"><strong>Score:</strong> {{element.score.achieved}} / {{element.score.possible}}<br></span>
                     <hr>
                 </div>
             </div>
