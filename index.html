@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branching demo</title>
+</head>
+<body>
+    <div id="app" class="container">
+        <div class="top-banner full-width content-center">
+            <h1 class="display-1">{{title}}</h1>
+            <h2 class="small">{{subtitle}}</h2><br>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>{{nodes[node].title}}</h2>
+                    </div>
+                    <div class="card-body card-content">
+                        <!-- content -->
+                        <div v-if="nodes[node].content">
+                            <div d-flex>
+                                <div v-if="nodes[node].content.text">
+                                    <p>{{nodes[node].content.text}}</p>
+                                </div>
+                                <div v-if="nodes[node].content.img" class="content-center">
+                                    <img class="content-img" :src="'img/' + nodes[node].content.img.src" :alt="nodes[node].content.img.alt">
+                                    <a :href="nodes[node].content.img.caption.link" target="_blank" rel="noopener noreferrer" class="small"><figcaption>{{nodes[node].content.img.caption.text}}</figcaption></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- input -->
+                        <div v-if="nodes[node].input">
+                            <!-- input type = textarea -->
+                            <div v-if="nodes[node].input.type == 'textarea'">
+                                <label for="input-textarea">{{nodes[node].input.label}}</label>
+                                <textarea id="input-textarea" v-model="nodes[node].input.entry" class="form-control"></textarea><br>
+                                <div class="full-width content-center"><button @click=inputSubmit(node) class="btn m-2 btn-primary">Submit</button></div><br>
+                            </div>
+                            <!-- input type = checkbox -->
+                            <div v-if="nodes[node].input.type == 'checkbox'">
+                                <label for="input-checkboxes">{{nodes[node].input.label}}</label>
+                                <div id="checkboxes">
+                                    <div v-for="checkbox in nodes[node].input.checkboxes" class="form-check">
+                                        <input class="form-check-input" type="checkbox" v-model="checkbox.checked" :disabled="nodes[node].input.disabled">
+                                        <label class="form-check-label">{{checkbox.label}}</label>
+                                    </div>
+                                </div>
+                                <div class="full-width content-center"><button @click=inputSubmit(node) class="btn m-2 btn-primary" :disabled="nodes[node].input.disabled">Submit</button></div><br>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer content-center">
+                        <!-- options -->
+                        <div v-if="nodes[node].options || nodes[node].input">
+                            <span v-for="option in nodes[node].options">
+                                <button @click=goTo(option.goTo()) class="btn m-2" :class="option.class" :disabled="option.disabled">{{option.title}}</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Scenario notes</h2>
+                    </div>
+                    <div class="card-body card-content scroll">
+                        <div v-for="element in scenario.steps.slice().reverse()">
+                            <strong>{{nodes[element.node].title}}: </strong>
+                            <span v-html="element.notes"></span>
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <i>As you progress through this scenario significant information will be recorded here for you to refer back to. Scroll down to view older entries.</i>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <br>
+        <hr>
+        <h3>Developer Panel</h3>
+        Current node: <span class="badge bg-secondary">{{node}}</span> <button @click=goTo(node+1) class="btn btn-sm m-2 btn-warning" >Go to next node</button><br>
+        <i>{{nodes[node].comment}}</i><br>
+        <br>
+        <div class="card">
+            <div class="card-header">
+                <h4>Scenario Summary:</h4>
+            </div>
+            <div class="card-body">
+                <div v-for="element in scenario.steps">
+                    <h5>{{nodes[element.node].title}} [{{element.node}}]: </h5>
+                    <span v-if="element.decisions"><strong>Actions:</strong> <span v-html="element.decisions"></span><br></span>
+                    <span v-if="element.notes"><strong>Notes:</strong> <span v-html="element.notes"></span><br></span>
+                    <span v-if="element.feedback"><strong>Feedback:</strong> <span v-html="element.feedback"></span><br></span>
+                    <span v-if="element.score"><strong>Score:</strong> {{element.score.achieved}} / {{element.score.possible}} [{{scenario.score.achieved}} / {{scenario.score.possible}}]<br></span>
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </div> <!-- end of app -->
+
+    <!-- development version, includes helpful console warnings -->
+    <!-- Bootstrap 5 - Latest compiled and minified CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 5 - Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- vue js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- sweet alert 2 -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- my scripts -->
+    <script src="app.js"></script>
+    <link href="style.css" rel="stylesheet">
+</body>
+</html>
