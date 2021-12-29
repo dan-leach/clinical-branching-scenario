@@ -16,47 +16,53 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">
-                        <h2>{{nodes[node].title}}</h2>
+                        <h2>{{nodes[node].heading}}</h2>
                     </div>
+
+                    <!-- contents -->
                     <div class="card-body card-content">
-                        <!-- content -->
-                        <div v-if="nodes[node].content">
-                            <div d-flex>
-                                <div v-if="nodes[node].content.text">
-                                    <p>{{nodes[node].content.text}}</p>
-                                </div>
-                                <div v-if="nodes[node].content.img" class="content-center">
-                                    <img class="content-img" :src="'img/' + nodes[node].content.img.src" :alt="nodes[node].content.img.alt">
-                                    <a :href="nodes[node].content.img.caption.link" target="_blank" rel="noopener noreferrer" class="small"><figcaption>{{nodes[node].content.img.caption.text}}</figcaption></a>
-                                </div>
+                        <div v-for="(content, index) in nodes[node].contents">
+                        
+                            <!--text-->
+                            <div v-if="content.type == 'text'">
+                                <p>{{content.text}}</p>
                             </div>
-                        </div>
-                        <!-- input -->
-                        <div v-if="nodes[node].input">
-                            <!-- input type = textarea -->
-                            <div v-if="nodes[node].input.type == 'textarea'">
-                                <label for="input-textarea">{{nodes[node].input.label}}</label>
-                                <textarea id="input-textarea" v-model="nodes[node].input.entry" class="form-control"></textarea><br>
-                                <div class="full-width content-center"><button @click=inputSubmit(node) class="btn m-2 btn-primary">Submit</button></div><br>
+
+                            <!--img-->
+                            <div v-else-if="content.type == 'img'" class="content-center">
+                                <img class="content-img" :src="'img/' + content.src" :alt="content.alt">
+                                <a :href="content.caption.link" target="_blank" rel="noopener noreferrer" class="small"><figcaption>{{content.caption.text}}</figcaption></a>
                             </div>
-                            <!-- input type = checkbox -->
-                            <div v-if="nodes[node].input.type == 'checkbox'">
-                                <label for="input-checkboxes">{{nodes[node].input.label}}</label>
-                                <div id="checkboxes">
-                                    <div v-for="checkbox in nodes[node].input.checkboxes" class="form-check">
-                                        <input class="form-check-input" type="checkbox" v-model="checkbox.checked" :disabled="nodes[node].input.disabled">
-                                        <label class="form-check-label">{{checkbox.label}}</label>
+
+                            <!--input-->
+                            <div v-if="content.type == 'input'">
+                                
+                                <!--textarea-->
+                                <div v-if="content.inputType == 'textarea'">
+                                    <label for="input-textarea">{{content.label}}</label>
+                                    <textarea id="input-textarea" v-model="content.userEntry" class="form-control"></textarea><br>
+                                    <div class="full-width content-center"><button @click=fn.nodes.contents.inputs.textarea.submit(index) class="btn m-2 btn-primary">Submit</button></div><br>
+                                </div>
+
+                                <!--checkbox-->
+                                <div v-if="content.inputType == 'checkbox'">
+                                    <label for="input-checkboxes">{{content.label}}</label>
+                                    <div id="checkboxes">
+                                        <div v-for="checkbox in content.checkboxes" class="form-check">
+                                            <input class="form-check-input" type="checkbox" v-model="checkbox.checked" :disabled="content.disabled">
+                                            <label class="form-check-label">{{checkbox.label}}</label>
+                                        </div>
                                     </div>
+                                    <div class="full-width content-center"><button @click=fn.nodes.contents.inputs.checkbox.submit(index) class="btn m-2 btn-primary" :disabled="content.disabled">Submit</button></div><br>
                                 </div>
-                                <div class="full-width content-center"><button @click=inputSubmit(node) class="btn m-2 btn-primary" :disabled="nodes[node].input.disabled">Submit</button></div><br>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer content-center">
                         <!-- options -->
                         <div v-if="nodes[node].options || nodes[node].input">
-                            <span v-for="option in nodes[node].options">
-                                <button @click=goTo(option.goTo()) class="btn m-2" :class="option.class" :disabled="option.disabled">{{option.title}}</button>
+                            <span v-for="(option, index) in nodes[node].options">
+                                <button v-if="option.visible" @click=clickOption(index) class="btn m-2" :class="option.class" :disabled="option.disabled">{{option.title}}</button>
                             </span>
                         </div>
                     </div>
@@ -68,10 +74,12 @@
                         <h2>Scenario notes</h2>
                     </div>
                     <div class="card-body card-content scroll">
-                        <div v-for="element in scenario.steps.slice().reverse()">
-                            <strong>{{nodes[element.node].title}}: </strong>
-                            <span v-html="element.notes"></span>
-                            <hr>
+                        <div v-for="element in scenario.log.slice().reverse()">
+                            <div v-if="element.notes">
+                                <strong>{{nodes[element.node].heading}}: </strong>
+                                <span v-html="element.notes"></span>
+                                <hr>
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -84,20 +92,19 @@
         <br>
         <hr>
         <h3>Developer Panel</h3>
-        Current score: <span class="badge bg-secondary">{{scenario.score.achieved}} / {{scenario.score.possible}}</span> Current node: <span class="badge bg-secondary">{{node}}</span> <button @click=goTo(node+1) class="btn btn-sm m-2 btn-warning" >Go to next node</button><br>
-        <i>{{nodes[node].comment}}</i><br>
+        Current score: <span class="badge bg-secondary">{{scenario.score.achieved}} / {{scenario.score.possible}}</span> Current node: <span class="badge bg-secondary">{{node}}</span> <button @click=node++ class="btn btn-sm m-2 btn-warning" >Go to next node</button> <button @click=testFn class="btn btn-sm m-2 btn-warning" >testFn</button><br>
         <br>
         <div class="card">
             <div class="card-header">
                 <h4>Scenario Summary:</h4>
             </div>
             <div class="card-body">
-                <div v-for="element in scenario.steps">
-                    <h5>{{nodes[element.node].title}} [{{element.node}}]: </h5>
-                    <span v-if="element.decisions"><strong>Actions:</strong> <span v-html="element.decisions"></span><br></span>
-                    <span v-if="element.notes"><strong>Notes:</strong> <span v-html="element.notes"></span><br></span>
-                    <span v-if="element.feedback"><strong>Feedback:</strong> <span v-html="element.feedback"></span><br></span>
-                    <span v-if="element.score"><strong>Score:</strong> {{element.score.achieved}} / {{element.score.possible}}<br></span>
+                <div v-for="element in scenario.log">
+                    <h5>{{nodes[element.node].heading}} [{{element.node}}]: </h5>
+                    <span v-if="element.decisions"><strong>Decisions: </strong><span v-html="element.decisions"></span><br></span>
+                    <span v-if="element.notes"><strong>Notes: </strong><span v-html="element.notes"></span><br></span>
+                    <span v-if="element.feedback"><strong>Feedback: </strong><span v-html="element.feedback"></span><br></span>
+                    <span v-if="element.score"><strong>Score: </strong>{{element.score.achieved}} / {{element.score.possible}}<br></span>
                     <hr>
                 </div>
             </div>
@@ -114,7 +121,8 @@
     <!-- sweet alert 2 -->
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- my scripts -->
-    <script src="app.js"></script>
+    <script src="js/nodes.js"></script>
+    <script src="js/app.js"></script>
     <link href="style.css" rel="stylesheet">
 </body>
 </html>
