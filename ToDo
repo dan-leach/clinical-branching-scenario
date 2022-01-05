@@ -1,8 +1,6 @@
-Convert content to v-bind html, create getContent method to fetch all content elements
+Add content types:
+    single choice (radio boxes)
+    select from drop down menu
+    fill in the blanks
 
-Create disabled loop for all input types
-Create hidden loop for all content types
-
-Default scoring for checkboxes
-
-vue.set for disabled inputs
+test all condition methods

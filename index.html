@@ -16,7 +16,7 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">
-                        <h2>{{nodes[node].heading}}</h2>
+                        <h2>{{nodes[node].title}}</h2>
                     </div>
 
                     <!-- contents -->
@@ -24,30 +24,35 @@
                         <div v-for="(content, index) in nodes[node].contents">
                         
                             <!--text-->
-                            <div v-if="content.type == 'text'">
+                            <div v-if="content.type == 'p'">
                                 <p>{{content.text}}</p>
                             </div>
 
+                            <!--heading-->
+                            <div v-if="content.type == 'h'">
+                                <h3>{{content.text}}</h3>
+                            </div>
+                            
                             <!--img-->
                             <div v-else-if="content.type == 'img'" class="content-center">
-                                <img class="content-img" :src="'img/' + content.src" :alt="content.alt">
+                                <img class="content-img" :src="'img/' + content.path" :alt="content.text">
                                 <a v-if="content.caption" :href="content.caption.link" target="_blank" rel="noopener noreferrer" class="small"><figcaption>{{content.caption.text}}</figcaption></a>
                             </div>
 
                             <!--textarea-->
                             <div v-if="content.type == 'inputTextarea'">
-                                <label for="input-textarea">{{content.label}}</label>
+                                <label for="input-textarea">{{content.text}}</label>
                                 <textarea id="input-textarea" v-model="content.userEntry" class="form-control"></textarea><br>
                                 <div class="full-width content-center"><button @click=fn.nodes.contents.inputTextarea.submit(index) class="btn m-2 btn-primary">Submit</button></div><br>
                             </div>
 
                             <!--checkbox-->
                             <div v-if="content.type == 'inputCheckbox'">
-                                <label for="input-checkboxes">{{content.label}}</label>
+                                <label for="input-checkboxes">{{content.text}}</label>
                                 <div id="checkboxes">
                                     <div v-for="checkbox in content.checkboxes" class="form-check">
                                         <input class="form-check-input" type="checkbox" v-model="checkbox.checked" :disabled="content.disabled">
-                                        <label class="form-check-label">{{checkbox.label}}</label>
+                                        <label class="form-check-label">{{checkbox.title}}</label>
                                     </div>
                                 </div>
                                 <div class="full-width content-center"><button @click=fn.nodes.contents.inputCheckbox.submit(index) class="btn m-2 btn-primary" :disabled="content.disabled">Submit</button></div><br>
@@ -72,7 +77,7 @@
                     <div class="card-body card-content scroll">
                         <div v-for="element in scenario.log.slice().reverse()">
                             <div v-if="element.notes">
-                                <strong>{{nodes[element.node].heading}}: </strong>
+                                <strong>{{nodes[element.node].title}}: </strong>
                                 <span v-html="element.notes"></span>
                                 <hr>
                             </div>
@@ -97,7 +102,7 @@
             <div class="card-body">
                 <div v-for="element in scenario.log">
                     <span v-if="element.log">
-                        <h5>{{nodes[element.node].heading}} [{{element.node}}]: </h5>
+                        <h5>{{nodes[element.node].title}} [{{element.node}}]: </h5>
                         <span v-html="element.log"></span><br>
                         <hr>
                     </span>
@@ -118,7 +123,6 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- my scripts -->
     <script src="js/scenario.js"></script>
-    <script src="js/premount.js"></script>
     <script src="js/app.js"></script>
     <link href="style.css" rel="stylesheet">
 </body>
