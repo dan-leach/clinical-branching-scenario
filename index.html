@@ -31,30 +31,26 @@
                             <!--img-->
                             <div v-else-if="content.type == 'img'" class="content-center">
                                 <img class="content-img" :src="'img/' + content.src" :alt="content.alt">
-                                <a :href="content.caption.link" target="_blank" rel="noopener noreferrer" class="small"><figcaption>{{content.caption.text}}</figcaption></a>
+                                <a v-if="content.caption" :href="content.caption.link" target="_blank" rel="noopener noreferrer" class="small"><figcaption>{{content.caption.text}}</figcaption></a>
                             </div>
 
-                            <!--input-->
-                            <div v-if="content.type == 'input'">
-                                
-                                <!--textarea-->
-                                <div v-if="content.inputType == 'textarea'">
-                                    <label for="input-textarea">{{content.label}}</label>
-                                    <textarea id="input-textarea" v-model="content.userEntry" class="form-control"></textarea><br>
-                                    <div class="full-width content-center"><button @click=fn.nodes.contents.inputs.textarea.submit(index) class="btn m-2 btn-primary">Submit</button></div><br>
-                                </div>
+                            <!--textarea-->
+                            <div v-if="content.type == 'inputTextarea'">
+                                <label for="input-textarea">{{content.label}}</label>
+                                <textarea id="input-textarea" v-model="content.userEntry" class="form-control"></textarea><br>
+                                <div class="full-width content-center"><button @click=fn.nodes.contents.inputTextarea.submit(index) class="btn m-2 btn-primary">Submit</button></div><br>
+                            </div>
 
-                                <!--checkbox-->
-                                <div v-if="content.inputType == 'checkbox'">
-                                    <label for="input-checkboxes">{{content.label}}</label>
-                                    <div id="checkboxes">
-                                        <div v-for="checkbox in content.checkboxes" class="form-check">
-                                            <input class="form-check-input" type="checkbox" v-model="checkbox.checked" :disabled="content.disabled">
-                                            <label class="form-check-label">{{checkbox.label}}</label>
-                                        </div>
+                            <!--checkbox-->
+                            <div v-if="content.type == 'inputCheckbox'">
+                                <label for="input-checkboxes">{{content.label}}</label>
+                                <div id="checkboxes">
+                                    <div v-for="checkbox in content.checkboxes" class="form-check">
+                                        <input class="form-check-input" type="checkbox" v-model="checkbox.checked" :disabled="content.disabled">
+                                        <label class="form-check-label">{{checkbox.label}}</label>
                                     </div>
-                                    <div class="full-width content-center"><button @click=fn.nodes.contents.inputs.checkbox.submit(index) class="btn m-2 btn-primary" :disabled="content.disabled">Submit</button></div><br>
                                 </div>
+                                <div class="full-width content-center"><button @click=fn.nodes.contents.inputCheckbox.submit(index) class="btn m-2 btn-primary" :disabled="content.disabled">Submit</button></div><br>
                             </div>
                         </div>
                     </div>
@@ -100,15 +96,15 @@
             </div>
             <div class="card-body">
                 <div v-for="element in scenario.log">
-                    <h5>{{nodes[element.node].heading}} [{{element.node}}]: </h5>
-                    <span v-if="element.decisions"><strong>Decisions: </strong><span v-html="element.decisions"></span><br></span>
-                    <span v-if="element.notes"><strong>Notes: </strong><span v-html="element.notes"></span><br></span>
-                    <span v-if="element.feedback"><strong>Feedback: </strong><span v-html="element.feedback"></span><br></span>
-                    <span v-if="element.score"><strong>Score: </strong>{{element.score.achieved}} / {{element.score.possible}}<br></span>
-                    <hr>
+                    <span v-if="element.log">
+                        <h5>{{nodes[element.node].heading}} [{{element.node}}]: </h5>
+                        <span v-html="element.log"></span><br>
+                        <hr>
+                    </span>
                 </div>
             </div>
         </div>
+        <br>
     </div> <!-- end of app -->
 
     <!-- development version, includes helpful console warnings -->
@@ -121,7 +117,8 @@
     <!-- sweet alert 2 -->
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- my scripts -->
-    <script src="js/nodes.js"></script>
+    <script src="js/scenario.js"></script>
+    <script src="js/premount.js"></script>
     <script src="js/app.js"></script>
     <link href="style.css" rel="stylesheet">
 </body>
