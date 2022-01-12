@@ -1,4 +1,4 @@
-var scenario = {
+let scenario = {
     //object with config and nodes objects
     //required
     title: "Example Scenario",
@@ -29,10 +29,20 @@ var scenario = {
                 inputCheckbox: {
                     defaultScore: {
                         recommended: 10,
-                        //integer defines score for selected recommended checkbox is not defined in checkbox object
+                        //integer defines score for selected recommended checkbox if not defined in checkbox object
                         //required
                         notRecommended: -10
-                        //integer defines score for selected not recommended checkbox is not defined in checkbox object
+                        //integer defines score for selected not recommended checkbox if not defined in checkbox object
+                        //required
+                    }
+                },
+                inputRadio: {
+                    defaultScore: {
+                        recommended: 10,
+                        //integer defines score for selected recommended radio if not defined in radio object
+                        //required
+                        notRecommended: -10
+                        //integer defines score for selected not recommended radio if not defined in radio object
                         //required
                     }
                 }
@@ -45,10 +55,10 @@ var scenario = {
         {
             //object defines the node appearance and behaviour
             //minimum 1 required within nodes array
-            id: "example-name",
+            id: "example-node-1",
                 //string identifies the node object
                 //required for each node object - must be unique within scenario - kebab case
-            title: "Example",
+            title: "Example 1",
                 //string renders at top of the content area
                 //required for each node object
             contents: [
@@ -66,12 +76,9 @@ var scenario = {
                         //options: 'p', 'img', 'inputTextarea', 'inputCheckbox'
                         //type property for all content objects which require user input begins with 'input'
                         //required for each content object
-                    text: "This content will be show to the user as a paragraph.",
+                    text: "This content will be show to the user as a paragraph."
                         //string renders within <p> tags
                         //required for content type 'p'
-                    excludeFromLog: true
-                        //boolean
-                        //optional - set true content will not be shown in the casenotes panel or recorded in the developer log
                 },
                 {
                     id: "heading-example-1",
@@ -87,7 +94,7 @@ var scenario = {
                     text: "An example image",
                         //string defines hover text for the image, and the link text when shown in the casenotes
                         //required for content type 'img'
-                    path: "example.jpg",
+                    path: "example.png",
                         //string defines the path of the image file within directory 'img/'
                         //required for content type 'img'
                     caption: {
@@ -101,11 +108,52 @@ var scenario = {
                             //optional - if not defined then clicking the caption link will produce no effect
                     }
                 },
+                { 
+                    id: "text-example-2",
+                    type: "p",
+                    text: "This content will be show to the user as a paragraph but will not appear in the notes.",
+                    excludeFromLog: true
+                        //boolean
+                        //optional - set true content will not be shown in the casenotes panel or recorded in the developer log
+                },
+            ],
+            options: [
+                //array of option objects will be rendered below the content area
+                //required for each node object
+                {
+                    //object defines option appearance and behaviour
+                    id: "next",
+                        //identifies the option object
+                        //required for each option object - must be unique within options array
+                    title: "Next",
+                        //string renders as text on button
+                        //required for each option object
+                    class: "btn-warning",
+                        //string defines class(es) of option button
+                        //options include btn-secondary, btn-success, btn-warning etc
+                        //optional - if not defined will default to btn-primary
+                    goTo: "example-node-2",
+                        //string defines name of node to move to if this option is clicked
+                        //optional - if not defined will default to next node in array
+                    score: 15,
+                        //integer defines score for selecting this option, is only applied once even if option is selected multiple times, can be positive or negative
+                        //optional - if not defined the score will not change when the option is selected
+                    onceOnly: true
+                        //boolean defines if the option can only be selected once, for example if node may be visited by a user multiple times
+                        //optional - if not defined then defaults to false
+                }
+
+            ]
+        },
+        {
+            id: "example-node-2",
+            title: "Example 2",
+            contents: [
                 {
                     id: "keyword-example",
                     type: "inputTextarea",
                         //'inputTextarea' creates a textarea input with a submit button which will (optionally) test the user entry against defined keywords
-                    text: "Please enter some text:",
+                    text: "Please type in 'hello there':",
                         //string renders above the input area, should explain to the user what they should enter
                         //required for content type 'inputTextarea'
                     keywords: [ 
@@ -123,7 +171,7 @@ var scenario = {
                             triggers: [
                                 //array of trigger words to test user entry against
                                 //required for each keyword object
-                                "example trigger 1",
+                                "hello",
                                     //string compared against user entry and if found keyword object is 'found'
                                     //minimum 1 required within triggers array - must be lowercase
                                 "example trigger 2",
@@ -142,7 +190,7 @@ var scenario = {
                     id: "multiple-choice-example",
                     type: "inputCheckbox",
                         //'inputCheckbox' creates a series of checkboxes with a submit button which will (optionally) test the user selection
-                    text: "Please select from these options:",
+                    text: "Please select both options:",
                         //string renders above the checkboxes, should explain to the user how to make their selection
                         //required for content type 'inputCheckbox'
                     checkboxes: [
@@ -166,61 +214,21 @@ var scenario = {
                             score: 25
                                 //integer defines custom score value for selecting this checkbox object. Can be positive or negative
                                 //optional - if not defined default score will be defined by default score property -> config.nodes.contents.inputCheckboxes.defaultScoreRecommended / .defaultScoreNotRecommended
-                        }
-                    ]
-                }
-            ],
-            options: [
-                //array of option objects will be rendered below the content area
-                //required for each node object
-                {
-                    //object defines option appearance and behaviour
-                    id: "my-option",
-                        //identifies the option object
-                        //required for each option object - must be unique within options array
-                    title: "My option",
-                        //string renders as text on button
-                        //required for each option object
-                    class: "btn-secondary",
-                        //string defines class(es) of option button
-                        //options include btn-secondary, btn-success, btn-warning etc
-                        //optional - if not defined will default to btn-primary
-                    goTo: "example-name-2",
-                        //string defines name of node to move to if this option is clicked
-                        //optional - if not defined will default to next node in array
-                    score: 15,
-                        //integer defines score for selecting this option, is only applied once even if option is selected multiple times, can be positive or negative
-                        //optional - if not defined the score will not change when the option is selected
-                    conditions: [
-                        //array of conditions which must all evaluate to true before this option is displayed
-                        //optional - if not defined option will be visible by default
+                        },
                         {
-                            //object defines a condition which must evaluate to true before object is shown
-                            //minimum 1 required within conditions array if conditions array is defined
+                            id: "option-2",
+                            title: "Option 2",
+                            response: "You selected option 2"
+                        }
+                    ],
+                    conditions: [
+                        {
                             target: {
-                                //object defines object to become subject of test
-                                //required for each condition object
                                 id: "keyword-example",
-                                    //string id of object to test
-                                    //required
-                                in: "contents",
-                                    //string defines what array to search for the object within
-                                    //options 'nodes', 'contents', 'options'
-                                    //optional - if not defined defaults to contents
-                                nodeName: "example-name"
-                                    //string defines name of node object which contains the target object
-                                    //optional - if not defined defaults to current node. Ignored if type = 'node'
                             },
                             test: {
-                                //object defines test to perform on target
-                                //required for each condition object
-                                methodName: "checkedCount",
-                                    //string defines a function to perform on the defined content which will return a value to compare against the requirement
-                                    /*options:
-                                        - for nodes:
-                                            methodName: visitCount
-                                                set require to an integer, set operator to >, < or =
-                                        - for content
+                                methodName: "keywordIsFound",
+                                    /*options - for content:
                                             - p
                                                 methodName: seen
                                                     no operator or property required
@@ -255,6 +263,123 @@ var scenario = {
                                                     set require to be id of keyword to test
                                                 methodName: scorePercentage
                                                     typically set operator -> '>' and require to integer as percentage required
+                                    */
+                                require: "example-keyword"
+                            }
+                        }
+                    ]
+                },
+                {
+                    id: "single-choice-example",
+                    type: "inputRadio",
+                        //'inputRadio' creates a series of radio buttons with a submit button which will (optionally) test the user selection
+                    text: "Please select option 2:",
+                        //string renders above the radio buttons, should explain to the user how to make their selection
+                        //required for content type 'inputRadio'
+                    radios: [
+                        //array of radio buttons to display
+                        //required for content type 'inputRadio'
+                        {
+                            //object defines radio button appearance and behaviour
+                            //minimum 1 required within radios array
+                            id: "option-1",
+                                //string identifies the radio button
+                                //required for each radio object - must be unique within radios array - kebab case
+                            title: "Option 1",
+                                //string renders by the radio to describe the option to the user
+                                //required for each radio object
+                            response: "You selected option 1",
+                                //string renders in alert to user, casenotes and developer log, if the radio is selected
+                                //required for each radio object
+                            recommended: false,
+                                //boolean defines if this radio object is recommended to be selected by the user for feedback and scoring purposes
+                                //required for each radio object - if not defined will default to not recommended
+                            score: -10
+                                //integer defines custom score value for selecting this radio object. Can be positive or negative
+                                //optional - if not defined default score will be defined by default score property -> config.nodes.contents.inputRadio.defaultScoreRecommended / .defaultScoreNotRecommended
+                        },
+                        {
+                            id: "option-2",
+                            title: "Option 2",
+                            response: "You selected option 2",
+                            recommended: true,
+                            score: 10
+                        }
+                    ],
+                    conditions: [
+                        {
+                            target: {
+                                id: "multiple-choice-example",
+                            },
+                            test: {
+                                methodName: "checkedCount",
+                                operator: "=",
+                                require: 2
+                            }
+                        }
+                    ]
+                }
+            ],
+            options: [
+                {
+                    id: "next",
+                    title: "Next",
+                    conditions: [
+                        //array of conditions which must all evaluate to true before this option is displayed
+                        //optional - if not defined option will be visible by default
+                        {
+                            //object defines a condition which must evaluate to true before object is shown
+                            //minimum 1 required within conditions array if conditions array is defined
+                            target: {
+                                //object defines object to become subject of test
+                                //required for each condition object
+                                id: "example-node-1",
+                                    //string id of object to test
+                                    //required
+                                in: "nodes",
+                                    //string defines what array to search for the object within
+                                    //options 'nodes', 'contents', 'options'
+                                    //optional - if not defined defaults to contents
+                                nodeName: ""
+                                    //string defines name of node object which contains the target object
+                                    //optional - if not defined defaults to current node. Ignored if type = 'node'
+                            },
+                            test: {
+                                //object defines test to perform on target
+                                //required for each condition object
+                                methodName: "visitCount",
+                                    //string defines a function to perform on the defined content which will return a value to compare against the requirement
+                                    /*options - for nodes:
+                                            methodName: visitCount
+                                                set require to an integer, set operator to >, < or =
+                                    */
+                                    //required for each test object
+                                operator: ">",
+                                    //string defines operator for comparison of test requirement against returned value of test name
+                                    //optional - if not defined test will pass if defined test name returns 'true'
+                                require: 0
+                                    //integer defines value to compare against returned value of defined test using defined operator
+                                    //optional unless method requires it or if test operator defined
+                            }
+                        },
+                        {
+                            target: {
+                                id: "single-choice-example",
+                            },
+                            test: {
+                                methodName: "radioIsSelected",
+                                require: "option-2"
+                            }
+                        },
+                        {
+                            target: {
+                                id: "next",
+                                in: "options",
+                                nodeName: "example-node-1"
+                            },
+                            test: {
+                                methodName: "selectCount",
+                                    /*options:
                                         - for options
                                             methodName: seen
                                                 no operator or property required
@@ -268,22 +393,18 @@ var scenario = {
                                                 no operator or property required
                                                 if condition requires not to be visible set operator -> '=' and require -> false
                                     */
-                                    //required for each test object
                                 operator: ">",
-                                    //string defines operator for comparison of test requirement against returned value of test name
-                                    //optional - if not defined test will pass if defined test name returns 'true'
                                 require: 0
-                                    //integer defines value to compare against returned value of defined test using defined operator
-                                    //optional unless method requires it or if test operator defined
                             }
                         }
-                    ],
-                    onceOnly: true
-                        //boolean defines if the option can only be selected once, for example if node may be visited by a user multiple times
-                        //optional - if not defined then defaults to false
+                    ]
                 }
 
             ]
+        },
+        {
+            id: "example-node-3",
+            title: "Example 3"
         }
     ]
 }

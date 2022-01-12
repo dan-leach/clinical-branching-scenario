@@ -39,3 +39,10 @@ textarea {
     overflow-y: auto;
     text-align:justify;
 }
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+}

@@ -5,8 +5,12 @@ Add content types:
 
 test all condition methods
 
+let vs var
+arrow functions?
+semicolons?
 
-
+Graphical improvements:
+    animate new case note entries
 
 Prelaunch:
     - change to vue production version

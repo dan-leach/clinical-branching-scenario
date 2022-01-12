@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defining a scenario object</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Defining a scenario object</h1>
+        <div id="app">
+            <div v-for="(obj, key) in guide" class="L1">
+                <span v-if="typeof(obj) == 'object'">
+                    <key-value :k="key" :value="obj.value"></key-value>
+                    <notes-points :obj="obj"></notes-points>
+                    <span v-if="!obj.value">
+                        <div v-for="(obj2, key2) in obj" class="L2">
+                            <span v-if="typeof(obj2) == 'object'">
+                                <key-value :k="key2" :value="obj2.value"></key-value>
+                                <notes-points :obj="obj2"></notes-points>
+                                <span v-if="!obj.value">
+                                    <div v-for="(obj3, key3) in obj2" class="L3">
+                                        <span v-if="typeof(obj3) == 'object'">
+                                            <key-value :k="key3" :value="obj3.value"></key-value>
+                                            <notes-points :obj="obj3"></notes-points>
+                                            <span v-if="!obj.value">
+                                                <div v-for="(obj4, key4) in obj3" class="L4">
+                                                    <span v-if="typeof(obj4) == 'object'">
+                                                        <key-value :k="key4" :value="obj.value4"></key-value>
+                                                        <notes-points :obj="obj4"></notes-points>
+                                                        <span v-if="!obj.value">
+                                                            <div v-for="(obj5, key5) in obj4" class="L5">
+                                                                <span v-if="typeof(obj5) == 'object'">
+                                                                    <key-value :k="key5" :value="obj5.value"></key-value>
+                                                                    <notes-points :obj="obj5"></notes-points>
+                                                                    <span v-if="!obj.value">
+                                                                        <div v-for="(obj6, key6) in obj5" class="L6">
+                                                                            <span v-if="typeof(obj6) == 'object'">
+                                                                                <key-value :k="key6" :value="obj6.value"></key-value>
+                                                                                <notes-points :obj="obj6"></notes-points>
+                                                                                <span v-if="!obj.value">
+                                                                                    <div v-for="(obj7, key7) in obj6" class="L7">
+                                                                                        <span v-if="typeof(obj7) == 'object'">
+                                                                                            <key-value :k="key7" :value="obj7.value"></key-value>
+                                                                                            <notes-points :obj="obj7"></notes-points>
+                                                                                            <span v-if="!obj.value">
+                                                                                                <div v-for="(obj8, key8) in obj7" class="L8">
+                                                                                                    <span v-if="typeof(obj8) == 'object'">
+                                                                                                        <key-value :k="key8" :value="obj8.value"></key-value>
+                                                                                                        <notes-points :obj="obj8"></notes-points>
+                                                                                                        <span v-if="!obj.value">
+                                                                                                            <div v-for="(obj9, key9) in obj8" class="L9">
+                                                                                                                <span v-if="typeof(obj9) == 'object'">
+                                                                                                                    <key-value :k="key9" :value="obj9.value"></key-value>
+                                                                                                                    <notes-points :obj="obj9"></notes-points>
+                                                                                                                    <span v-if="!obj.value">
+                                                                                                                        <div v-for="(obj10, key10) in obj10" class="L10">
+                                                                                                                            <key-value :k="key10" :value="obj10.value"></key-value>
+                                                                                                                            <notes-points :obj="obj10"></notes-points>
+                                                                                                                        </div>
+                                                                                                                    <div class="L9" v-if="!obj9.value">}</div>
+                                                                                                                    </span>
+                                                                                                                </span>
+                                                                                                            </div>
+                                                                                                        <div class="L8" v-if="!obj8.value">}</div>
+                                                                                                        </span>
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                            <div class="L7" v-if="!obj7.value">}</div>
+                                                                                            </span>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                <div class="L6" v-if="!obj6.value">}</div>
+                                                                                </span>
+                                                                            </span>
+                                                                        </div>
+                                                                    <div class="L5" v-if="!obj5.value">}</div>
+                                                                    </span>
+                                                                </span>
+                                                            </div>
+                                                        <div class="L4" v-if="!obj4.value">}</div>
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            <div class="L3" v-if="!obj3.value">}</div>
+                                            </span>
+                                        </span>
+                                    </div>
+                                <div class="L2" v-if="!obj2.value">}</div>
+                                </span>
+                            </span>
+                        </div>
+                    <div class="L1" v-if="!obj.value">}</div>
+                    </span>
+                </span>
+            </div>
+        </div>
+        
+    <!-- development version, includes helpful console warnings -->
+    <!-- Bootstrap 5 - Latest compiled and minified CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 5 - Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- vue js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- sweet alert 2 -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="app.js"></script>
+    <link href="style.css" rel="stylesheet">
+</body>
+</html>

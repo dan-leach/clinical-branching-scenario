@@ -1,0 +1,49 @@
+.L1 {
+    padding-left: 25px;
+}
+.L2 {
+    padding-left: 50px;
+}
+.L3 {
+    padding-left: 75px;
+}
+.L4 {
+    padding-left: 100px;
+}
+.L5 {
+    padding-left: 125px;
+}
+.L6 {
+    padding-left: 150px;
+}
+.L7 {
+    padding-left: 175px;
+}
+.L8 {
+    padding-left: 200px;
+}
+.L9 {
+    padding-left: 225px;
+}
+.L10 {
+    padding-left: 250px;
+}
+.expandable {
+    text-decoration: underline;
+}
+.notes {
+    color: green;
+    font-size: 0.7rem;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+div {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+.key {
+    color: lightskyblue;
+}
+.value {
+    color: salmon;
+}

@@ -13,6 +13,12 @@ var scenario = {
                         recommended: 10,
                         notRecommended: -10
                     }
+                },
+                inputRadio: {
+                    defaultScore: {
+                        recommended: 10,
+                        notRecommended: -10
+                    }
                 }
             }
         }
@@ -48,7 +54,7 @@ var scenario = {
                 {
                     id: "rash",
                     type: "img",
-                    title: "Photograph of a infant with a rash",
+                    text: "Photograph of a infant with a rash",
                     path: "rash.jpg",
                     caption: {
                         text: "© Professor Raimo Suhonen/DermNet with permission.",

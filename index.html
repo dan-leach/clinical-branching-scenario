@@ -10,7 +10,7 @@
     <div id="app" class="container">
         <div class="top-banner full-width content-center">
             <h1 class="display-1">{{title}}</h1>
-            <h2 class="small">{{subtitle}}</h2><br>
+            <h2 v-if="subtitle" class="small">{{subtitle}}</h2><br>
         </div>
         <div class="row">
             <div class="col-md-8">
@@ -21,49 +21,64 @@
 
                     <!-- contents -->
                     <div class="card-body card-content">
-                        <div v-for="(content, index) in nodes[node].contents">
-                        
+                        <div v-for="(content, index) in nodes[node].contents" v-bind:key="content.id"> <!--key required for correct transitions for all v-for elements-->
                             <!--text-->
-                            <div v-if="content.type == 'p'">
-                                <p>{{content.text}}</p>
-                            </div>
-
-                            <!--heading-->
-                            <div v-if="content.type == 'h'">
-                                <h3>{{content.text}}</h3>
-                            </div>
-                            
-                            <!--img-->
-                            <div v-else-if="content.type == 'img'" class="content-center">
-                                <img class="content-img" :src="'img/' + content.path" :alt="content.text">
-                                <a v-if="content.caption" :href="content.caption.link" target="_blank" rel="noopener noreferrer" class="small"><figcaption>{{content.caption.text}}</figcaption></a>
-                            </div>
-
-                            <!--textarea-->
-                            <div v-if="content.type == 'inputTextarea'">
-                                <label for="input-textarea">{{content.text}}</label>
-                                <textarea id="input-textarea" v-model="content.userEntry" class="form-control"></textarea><br>
-                                <div class="full-width content-center"><button @click=fn.nodes.contents.inputTextarea.submit(index) class="btn m-2 btn-primary">Submit</button></div><br>
-                            </div>
-
-                            <!--checkbox-->
-                            <div v-if="content.type == 'inputCheckbox'">
-                                <label for="input-checkboxes">{{content.text}}</label>
-                                <div id="checkboxes">
-                                    <div v-for="checkbox in content.checkboxes" class="form-check">
-                                        <input class="form-check-input" type="checkbox" v-model="checkbox.checked" :disabled="content.disabled">
-                                        <label class="form-check-label">{{checkbox.title}}</label>
-                                    </div>
+                            <transition name="fade" mode="out-in" appear> <!--appear attribute ensures initial appearance of each element is transitioned-->
+                                <div v-if="content.type == 'p' && content.visible">
+                                    <p v-if="content.visible">{{content.text}}</p>
                                 </div>
-                                <div class="full-width content-center"><button @click=fn.nodes.contents.inputCheckbox.submit(index) class="btn m-2 btn-primary" :disabled="content.disabled">Submit</button></div><br>
-                            </div>
+
+                                <!--heading-->
+                                <div v-if="content.type == 'h' && content.visible">
+                                    <h3 v-if="content.visible">{{content.text}}</h3>
+                                </div>
+                            
+                                <!--img-->
+                                <div v-if="content.type == 'img' && content.visible" class="content-center">
+                                    <img class="content-img" :src="'img/' + content.path" :alt="content.text">
+                                    <a v-if="content.caption" :href="content.caption.link" target="_blank" rel="noopener noreferrer" class="small"><figcaption>{{content.caption.text}}</figcaption></a>
+                                </div>
+
+                                <!--textarea-->
+                                <div v-if="content.type == 'inputTextarea' && content.visible">
+                                    <label for="input-textarea">{{content.text}}</label>
+                                    <textarea id="input-textarea" v-model="content.userEntry" class="form-control"></textarea><br>
+                                    <div class="full-width content-center"><button @click=fn.nodes.contents.inputTextarea.submit(index) class="btn m-2 btn-primary">Submit</button></div><br>
+                                </div>
+
+                                <!--checkbox-->
+                                <div v-if="content.type == 'inputCheckbox' && content.visible">
+                                    <label for="input-checkboxes">{{content.text}}</label>
+                                    <div id="checkboxes">
+                                        <div v-for="checkbox in content.checkboxes" class="form-check">
+                                            <input class="form-check-input" type="checkbox" v-model="checkbox.checked" :disabled="content.disabled">
+                                            <label class="form-check-label">{{checkbox.title}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="full-width content-center"><button @click=fn.nodes.contents.inputCheckbox.submit(index) class="btn m-2 btn-primary" :disabled="content.disabled">Submit</button></div><br>
+                                </div>
+
+                                <!--radio-->
+                                <div v-if="content.type == 'inputRadio' && content.visible">
+                                    <label for="input-radio">{{content.text}}</label>
+                                    <div id="radios">
+                                        <div v-for="radio in content.radios" class="form-check">
+                                            <input class="form-check-input" type="radio" name="content.id" :value="radio.id" v-model="content.selected" :disabled="content.disabled">
+                                            <label class="form-check-label">{{radio.title}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="full-width content-center"><button @click=fn.nodes.contents.inputRadio.submit(index) class="btn m-2 btn-primary" :disabled="content.disabled">Submit</button></div><br>
+                                </div>
+                            </transition>
                         </div>
                     </div>
                     <div class="card-footer content-center">
                         <!-- options -->
                         <div v-if="nodes[node].options || nodes[node].input">
-                            <span v-for="(option, index) in nodes[node].options">
-                                <button v-if="option.visible" @click=clickOption(index) class="btn m-2" :class="option.class" :disabled="option.disabled">{{option.title}}</button>
+                            <span v-for="(option, index) in nodes[node].options" v-bind:key="option.id">
+                                <transition name="fade" appear>
+                                    <button v-if="option.visible" @click=fn.nodes.options.select(index) class="btn m-2" :class="option.class" :disabled="option.disabled">{{option.title}}</button>
+                                </transition>
                             </span>
                         </div>
                     </div>
@@ -117,12 +132,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap 5 - Latest compiled JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- vue js -->
+    <!-- vue2 -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <!-- sweet alert 2 -->
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- my scripts -->
-    <script src="js/scenario.js"></script>
+    <script src="js/exampleScenario.js"></script>
     <script src="js/app.js"></script>
     <link href="style.css" rel="stylesheet">
 </body>
