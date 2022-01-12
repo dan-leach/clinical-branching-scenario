@@ -14,7 +14,7 @@
         </div>
         <div class="row">
             <div class="col-md-8">
-                <div class="card">
+                <div class="card" >
                     <div class="card-header">
                         <h2>{{nodes[node].title}}</h2>
                     </div>
@@ -22,17 +22,55 @@
                     <!-- contents -->
                     <div class="card-body card-content">
                         <div v-for="(content, index) in nodes[node].contents" v-bind:key="content.id"> <!--key required for correct transitions for all v-for elements-->
+                            
+                            <transition name="fade" mode="out-in" appear>
+                                <span v-if="content.heading">
+                                    <h3 v-if="content.heading.level == 1">{{content.heading.text}}</h3>
+                                    <h4 v-if="content.heading.level == 2">{{content.heading.text}}</h4>
+                                    <h5 v-if="content.heading.level == 3">{{content.heading.text}}</h5>
+                                </span>
+                            </transition>
+                            
                             <!--text-->
                             <transition name="fade" mode="out-in" appear> <!-- appear attribute ensures initial appearance of each element is transitioned-->
                                 <div v-if="content.type == 'p' && content.visible">
-                                    <p v-if="content.visible">{{content.text}}</p>
+                                    <p>{{content.text}}</p>
                                 </div>
                             </transition>
 
                             <!--heading-->
                             <transition name="fade" mode="out-in" appear>
                                 <div v-if="content.type == 'h' && content.visible">
-                                    <h3 v-if="content.visible">{{content.text}}</h3>
+                                    <h3 v-if="content.level == 1">{{content.text}}</h3>
+                                    <h4 v-if="content.level == 2">{{content.text}}</h4>
+                                    <h5 v-if="content.level == 3">{{content.text}}</h5>
+                                </div>
+                            </transition>
+
+                            <!--link-->
+                            <transition name="fade" mode="out-in" appear>
+                                <div v-if="content.type == 'a' && content.visible">
+                                    <p><a :href="content.link" target="_blank" rel="noopener noreferrer">{{content.text}}</a></p>
+                                </div>
+                            </transition>
+
+                            <!--unordered list-->
+                            <transition name="fade" mode="out-in" appear>
+                                <div v-if="content.type == 'ul' && content.visible">
+                                    <span v-if="content.text">{{content.text}}</span>
+                                    <ul>
+                                        <li v-for="item in content.items">{{item}}</li>
+                                    </ul>
+                                </div>
+                            </transition>
+
+                            <!--ordered list-->
+                            <transition name="fade" mode="out-in" appear>
+                                <div v-if="content.type == 'ol' && content.visible">
+                                    <span v-if="content.text">{{content.text}}</span>
+                                    <ol>
+                                        <li v-for="item in content.items">{{item}}</li>
+                                    </ol>
                                 </div>
                             </transition>
                             
@@ -97,7 +135,7 @@
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-header">
-                        <h2>Scenario notes</h2>
+                        <h2>Case notes</h2>
                     </div>
                     <div class="card-body card-content scroll">
                         <div v-for="element in scenario.log.slice().reverse()">
@@ -116,25 +154,27 @@
 
         </div>
         <br>
-        <hr>
-        <h3>Developer Panel</h3>
-        Current score: <span class="badge bg-secondary">{{scenario.score.achieved}} / {{scenario.score.possible}}</span> Current node: <span class="badge bg-secondary">{{node}}</span> <button @click=node++ class="btn btn-sm m-2 btn-warning" >Go to next node</button> <button @click=testFn class="btn btn-sm m-2 btn-warning" >testFn</button><br>
-        <br>
-        <div class="card">
-            <div class="card-header">
-                <h4>Scenario Summary:</h4>
-            </div>
-            <div class="card-body">
-                <div v-for="element in scenario.log">
-                    <span v-if="element.log">
-                        <h5>{{nodes[element.node].title}} [{{element.node}}]: </h5>
-                        <span v-html="element.log"></span><br>
-                        <hr>
-                    </span>
+        <div v-if="config.development.developerPanelVisible">
+            <hr>
+            <h3>Developer Panel</h3>
+            Current score: <span class="badge bg-secondary">{{scenario.score.achieved}} / {{scenario.score.possible}}</span> Current node: <span class="badge bg-secondary">{{node}}</span> <button @click=node++ class="btn btn-sm m-2 btn-warning" >Go to next node</button> <button @click=testFn class="btn btn-sm m-2 btn-warning" >testFn</button><br>
+            <br>
+            <div class="card">
+                <div class="card-header">
+                    <h4>Scenario Summary:</h4>
+                </div>
+                <div class="card-body">
+                    <div v-for="element in scenario.log">
+                        <span v-if="element.log">
+                            <h5>{{nodes[element.node].title}} [{{element.node}}]: </h5>
+                            <span v-html="element.log"></span><br>
+                            <hr>
+                        </span>
+                    </div>
                 </div>
             </div>
+            <br>
         </div>
-        <br>
     </div> <!-- end of app -->
 
     <!-- development version, includes helpful console warnings -->

@@ -101,6 +101,16 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 return "<p>" + content.text + "</p>"
                             }
                         },
+                        a: { 
+                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'p'
+                                seen: function(content){ //returns true if object 'content' has been seen
+                                    return content.seen
+                                }
+                            },
+                            getNotes: function(content){ //returns HTML template string with the with text as paragraph
+                                return "<a href=" + content.link + "target='_blank' rel='noopener noreferrer'>" + content.text + "</a>"
+                            }
+                        },
                         h: {
                             tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'h'
                                 seen: function(content){ //returns true if object 'content' has been seen
@@ -109,6 +119,32 @@ var RootComponent = { //create the app instance, import scenario specific data f
                             },
                             getNotes: function(content){ //returns HTML template string with heading as bold text
                                 return "<p><strong>" + content.text + "</strong></p>"
+                            }
+                        },
+                        ul: {
+                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'h'
+                                seen: function(content){ //returns true if object 'content' has been seen
+                                    return content.seen
+                                }
+                            },
+                            getNotes: function(content){ //returns HTML template string with heading as bold text
+                                var list = "<ul>"
+                                for (var itemIndex in content.items) list += "<li>" + content.items[itemIndex] + "</li>"
+                                list += "</ul>"
+                                return "<p>" + content.text + list + "</p>"
+                            }
+                        },
+                        ol: {
+                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'h'
+                                seen: function(content){ //returns true if object 'content' has been seen
+                                    return content.seen
+                                }
+                            },
+                            getNotes: function(content){ //returns HTML template string with heading as bold text
+                                var list = "<ol>"
+                                for (var itemIndex in content.items) list += "<li>" + content.items[itemIndex] + "</li>"
+                                list += "</ol>"
+                                return "<p>" + content.text + list + "</p>"
                             }
                         },
                         img: {
@@ -128,9 +164,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 },
                                 keywordFoundCount: function(content){ //returns the number of keywords in object 'content' that have been found by the user
                                     var count = 0
-                                    for (var keywordIndex in content.keywords){
-                                        if (content.keywords[keywordIndex].found) count++
-                                    }
+                                    for (var keywordIndex in content.keywords) if (content.keywords[keywordIndex].found) count++
                                     return count
                                 },
                                 keywordIsFound: function(content, keywordId){ //returns true if keyword with id 'keywordId' in object 'content' has been found
@@ -440,6 +474,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                     log: {
                         getNotes: function(){ //returns a string with the notes from each content object of the current node
                             var notes = ""
+                            if (app.nodes[app.node].excludeFromLog) return notes //return blank if entire node is excluded
                             for (var contentIndex in app.nodes[app.node].contents){ //loop through all the content objects
                                 var content = app.nodes[app.node].contents[contentIndex] //define the current content object
                                 if (content.excludeFromLog) continue
@@ -449,6 +484,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                         },
                         getLog: function(){
                             var log = ""
+                            if (app.nodes[app.node].excludeFromLog) return log //return blank if entire node is excluded
                             for (var contentIndex in app.nodes[app.node].contents){ //loop through all the content objects
                                 var content = app.nodes[app.node].contents[contentIndex] //define the current content object
                                 if (content.excludeFromLog) continue
@@ -573,12 +609,12 @@ var RootComponent = { //create the app instance, import scenario specific data f
                 }
             }
         }
-        scenario.nodes[0].visitCount++ //arrive event does not run for start node, so increment manually
     }
 }
 
 const createApp = Vue.createApp(RootComponent)
 const app = createApp.mount('#app')
 
+app.node = app.config.nodes.startNode
+app.nodes[app.node].visitCount++ //arrive event does not run for start node, so increment manually
 app.fn.nodes.updateView() //runs after app created, to ensure appropriate check of conditions and setting seen properties for node 0
-
