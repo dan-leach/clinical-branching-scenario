@@ -6,7 +6,7 @@ let scenario = {
             developerPanelVisible: true
         },
         nodes: {
-            startNode: 15,
+            startNode: 24,
             //object of configuration options relating to nodes
             //required
             contents: {
@@ -208,83 +208,18 @@ let scenario = {
             ]
         },
         {
-            id: "scenario-object",
-            title: "About the scenario object",
-            contents: [
-                {
-                    id: "text-main",
-                    type: "p",
-                    text: "In order to create a scenario you need to define a scenario object. If you've never done any programming before you'll need some help to get started, although this process is quite simple once you know a few rules. Since you're working through a 'scenario' right now, you can take a look at the scenario object that defines it. Try not to be put off by it's complexity at this stage, it'll get much clearer.",
-                    excludeFromLog: true
-                },
-                {
-                    id: "link-scenario-object-example",
-                    type: "a",
-                    text: "Click here to see the scenario object definition",
-                    link: "https://github.com/dan-leach/clinical-branching-scenario/blob/main/js/exampleScenario.js"
-                },
-                {
-                    id: "text-json",
-                    type: "p",
-                    text: "The scenario object is written using javascript object notation, and creates a receipe for the branching logic program to follow to create an interactive experience for the user. Even if you're not going to create the scenario object definition yourself, it helps to be aware of how it works. You need to be aware of a few different types of data that we'll use when creating our scenario object:",
-                    excludeFromLog: true
-                },
-                {
-                    id: "text-string",
-                    type: "p",
-                    heading: {
-                        level: 1,
-                        text: "String"
-                    },
-                    text: "A string is a series of characters: letters, numbers or special characters. For example 'abc', 'hello world' or 'My favourite number is 7!'",
-                    excludeFromLog: true
-                },
-                {
-                    id: "text-integer-float",
-                    type: "p",
-                    heading: {
-                        level: 1,
-                        text: "Integer / Float"
-                    },
-                    text: "An integer is a whole number which can be positive or negative. For example, -10, 0, 23 are integers. Floats are 'floating' point numbers e.g. 0.01 or -10.4.",
-                    excludeFromLog: true
-                },
-                {
-                    id: "text-array",
-                    type: "p",
-                    heading: {
-                        level: 1,
-                        text: "Array"
-                    },
-                    text: "An array is a series of data points. An array is denoted by square brackets and each data point within is separated by a comma. For example you could store a series of words as strings within an array: ['One', 'Two', 'Three']. The data points inside an array can be any time of data such as string, integer, object or another array.",
-                    excludeFromLog: true
-                },
-                {
-                    id: "text-object",
-                    type: "p",
-                    heading: {
-                        level: 1,
-                        text: "Object"
-                    },
-                    text: "An object is similar to an array in that it contains other data points but with an object each data point is made up of a key-value pair, also called a property. For example 'age: 10' is a key-value pair where 'age' is the key and 10 is value. An object is denoted by curly brackets and key-value pairs are separated by commas. For example: objectName: { name: 'Joe Bloggs', age: 10}. Objects can contain any data type including other objects.",
-                    excludeFromLog: true
-                }
-            ],
-            options: [
-                {
-                    id: "next",
-                    title: "Next"
-                }
-            ]
-        },
-        {
             id: "scenario-object-structure",
             title: "Scenario object structure",
             contents: [
                 {
+                    id: "text-main",
+                    type: "p",
+                    text: "Now that we've discussed the user interface we can consider the different things we can show the user."
+                },
+                {
                     id: "ul-top-level-properties",
                     type: "ul",
-                    text: "The scenario object has a number of top level properties:",
+                    text: "A scenario has these top level properties:",
                     items: [
                         "Title - the title for your scenario - appears at the top of the page",
                         "Subtitle (optional) - appears below the title",
@@ -299,13 +234,13 @@ let scenario = {
                         level: 1,
                         text: "About nodes"
                     },
-                    text: "The scenario includes an array of 'nodes'. We'll refer to each object in 'nodes' as a 'node'.",
+                    text: "The scenario is made up of a series (or array) of 'nodes'. We'll refer to each step we take through a scenario as a 'node'. Depending on how you define the scenario logic and the way a user interacts with the scenario, they might not visit all the nodes, or not in order.",
                     excludeFromLog: true
                 },
                 {
                     id: "about-nodes-2",
                     type: "p",
-                    text: "The main content panel shows the current node. Each time the user clicks an option button in the footer of the main content area they move to a new node. Each node contains various properties including 'contents' and 'options'.",
+                    text: "The main content panel shows the current node. Each time the user clicks an option button in the footer of the main content area they move to a new node. Each node contains various properties including its 'contents' and 'options'.",
                     excludeFromLog: true
                 }
             ],
@@ -323,7 +258,7 @@ let scenario = {
                 {
                     id: "text-main",
                     type: "p",
-                    text: "Each node contains an array of contents. We'll refer to each object in 'contents' as a 'content element'. Each content element within the contents array for the current node will appear in the main content panel body.",
+                    text: "Each node contains an array of contents. We'll refer to each object in 'contents' as a 'content element'. Each content element for the current node will appear in the main content panel body.",
                     excludeFromLog: true
                 },
                 {
@@ -492,6 +427,7 @@ let scenario = {
         {
             id: "content-type-interactive",
             title: "Content type: interactive elements",
+            excludeFromLog: true,
             contents: [
                 {
                     id: "ul-interactive-elements",
@@ -520,6 +456,7 @@ let scenario = {
         {
             id: "interactive-elements-textarea",
             title: "Interactive elements: textarea",
+            excludeFromLog: true,
             contents: [
                 {
                     id: "text-main",
@@ -544,6 +481,22 @@ let scenario = {
                             response: "Nice one. Now you should be able to move on by clicking 'next' below."
                         }
                     ]
+                },
+                {
+                    id: "text-next",
+                    type: "p",
+                    text: "You can see that this text element and the option button below have appeared since you entered the keyword 'next'. This behaviour is controlled by 'conditions' which we'll discuss later.",
+                    conditions: [
+                        {
+                            target: {
+                                id: "inputTextarea-example",
+                            },
+                            test: {
+                                methodName: "keywordIsFound",
+                                require: "next"
+                            }
+                        }
+                    ]
                 }
             ],
             options: [
@@ -562,6 +515,567 @@ let scenario = {
                         }
                     ]
                 } 
+            ]
+        },
+        {
+            id: "interactive-elements-checkbox",
+            title: "Interactive elements: checkbox",
+            excludeFromLog: true,
+            contents: [
+                {
+                    id: "text-main",
+                    type: "p",
+                    text: "Below there is a series of checkboxes which the user can select from. You can define responses they see depending on their selection."
+                },
+                {
+                    id: "inputCheckbox-example",
+                    type: "inputCheckbox",
+                    text: "Please select one or more options:",
+                    checkboxes: [
+                        {
+                            id: "option-1",
+                            title: "Option 1",
+                            response: "You selected option 1."
+                        },
+                        {
+                            id: "option-2",
+                            title: "Option 2",
+                            response: "You selected option 2."
+                        },
+                        {
+                            id: "option-3",
+                            title: "Option 3",
+                            response: "You selected option 3."
+                        }
+                    ]
+                }
+            ],
+            options: [
+                {
+                    id: "next",
+                    title: "Next",
+                    conditions: [
+                        {
+                            target: {
+                                id: "inputCheckbox-example",
+                            },
+                            test: {
+                                methodName: "checkedCount",
+                                operator: ">",
+                                require: 0
+                            }
+                        }
+                    ]
+                } 
+            ]
+        },
+        {
+            id: "interactive-elements-radio",
+            title: "Interactive elements: radio",
+            excludeFromLog: true,
+            contents: [
+                {
+                    id: "text-main",
+                    type: "p",
+                    text: "Below there is a series of radio buttons which the user can select from - in contrast to checkboxes, only one option can be selected. You can define responses they see depending on their selection."
+                },
+                {
+                    id: "inputRadio-example",
+                    type: "inputRadio",
+                    text: "Please select an option:",
+                    radios: [
+                        {
+                            id: "option-1",
+                            title: "Option 1",
+                            response: "You selected option 1."
+                        },
+                        {
+                            id: "option-2",
+                            title: "Option 2",
+                            response: "You selected option 2."
+                        },
+                        {
+                            id: "option-3",
+                            title: "Option 3",
+                            response: "You selected option 3."
+                        }
+                    ]
+                }
+            ],
+            options: [
+                {
+                    id: "next",
+                    title: "Next",
+                    conditions: [
+                        {
+                            target: {
+                                id: "inputRadio-example",
+                            },
+                            test: {
+                                methodName: "selectedCount",
+                                operator: ">",
+                                require: 0
+                            }
+                        }
+                    ]
+                } 
+            ]
+        },
+        {
+            id: "node-options",
+            title: "Node options",
+            contents: [
+                {
+                    id: "text-main",
+                    type: "p",
+                    text: "Now that we've looked at node contents, we'll look at node options."
+                },
+                {
+                    id: "text-options",
+                    type: "p",
+                    text: "Each node contains an array of options. We'll refer to each object in 'options' as a 'option button'. Each option button for the current node will appear in the main content panel footer. Until now you've only seen one option for each node: 'next'. Below you can see several different options."
+                },
+                {
+                    id: "text-find-continue",
+                    type: "p",
+                    text: "Once you've visited each of the three options, a new button 'Continue' will appear."
+                }
+            ],
+            options: [
+                {
+                    id: "option-1",
+                    title: "Option 1",
+                    goTo: "options-demo-1",
+                    onceOnly: true
+                },
+                {
+                    id: "option-2",
+                    title: "Option 2",
+                    goTo: "options-demo-2",
+                    onceOnly: true
+                },
+                {
+                    id: "option-3",
+                    title: "Option 3",
+                    goTo: "options-demo-3",
+                    onceOnly: true
+                },
+                {
+                    id: "continue",
+                    title: "Continue",
+                    goTo: "options-demo-continue",
+                    conditions: [
+                        {
+                            target: {
+                                id: "options-demo-1",
+                                in: "nodes"
+                            },
+                            test: {
+                                methodName: "visitCount",
+                                operator: ">",
+                                require: 0
+                            }
+                        },
+                        {
+                            target: {
+                                id: "options-demo-2",
+                                in: "nodes"
+                            },
+                            test: {
+                                methodName: "visitCount",
+                                operator: ">",
+                                require: 0
+                            }
+                        },
+                        {
+                            target: {
+                                id: "options-demo-3",
+                                in: "nodes"
+                            },
+                            test: {
+                                methodName: "visitCount",
+                                operator: ">",
+                                require: 0
+                            }
+                        }
+                    ]
+                },
+            ]
+        },
+        {
+            id: "options-demo-1",
+            title: "Options demo (1)",
+            contents: [
+                {
+                    id: "id",
+                    type: "p",
+                    text: "You chose option 1."
+                }
+            ],
+            options: [
+                {
+                    id: "back",
+                    title: "Go back to options demo start",
+                    goTo: "node-options"
+                },
+                {
+                    id: "alt-2",
+                    title: "Go to option 2 instead",
+                    goTo: "options-demo-2"
+                },
+                {
+                    id: "alt-3",
+                    title: "Go to option 3 instead",
+                    goTo: "options-demo-3"
+                }
+            ]
+        },
+        {
+            id: "options-demo-2",
+            title: "Options demo (2)",
+            contents: [
+                {
+                    id: "id",
+                    type: "p",
+                    text: "You chose option 2."
+                }
+            ],
+            options: [
+                {
+                    id: "back",
+                    title: "Go back to options demo start",
+                    goTo: "node-options"
+                },
+                {
+                    id: "alt-1",
+                    title: "Go to option 1 instead",
+                    goTo: "options-demo-1"
+                },
+                {
+                    id: "alt-3",
+                    title: "Go to option 3 instead",
+                    goTo: "options-demo-3"
+                }
+            ]
+        },
+        {
+            id: "options-demo-3",
+            title: "Options demo (3)",
+            contents: [
+                {
+                    id: "id",
+                    type: "p",
+                    text: "You chose option 3."
+                }
+            ],
+            options: [
+                {
+                    id: "back",
+                    title: "Go back to options demo start",
+                    goTo: "node-options"
+                },
+                {
+                    id: "alt-1",
+                    title: "Go to option 1 instead",
+                    goTo: "options-demo-1"
+                },
+                {
+                    id: "alt-2",
+                    title: "Go to option 2 instead",
+                    goTo: "options-demo-2"
+                }
+            ]
+        },
+        {
+            id: "options-demo-continue",
+            title: "Options demo (end)",
+            contents: [
+                {
+                    id: "id",
+                    type: "p",
+                    text: "You can see how you can direct users down a particular path by taking them to certain nodes when they select certain options. You may have noticed that you could only select certain options once which is an optional behaviour."
+                },
+                {
+                    id: "id",
+                    type: "p",
+                    text: "Together with conditional rules you can create complex and immersive clinical scenarios. We'll look at conditions next."
+                }
+            ],
+            options: [
+                {
+                    id: "next",
+                    title: "Next"
+                } 
+            ]
+        },
+        {
+            id: "conditions-1",
+            title: "Conditions (part 1)",
+            contents: [
+                {
+                    id: "text-main",
+                    type: "p",
+                    text: "Conditions allow you to define rules that must be met before either content elements or option buttons are visible."
+                },
+                {
+                    id: "inputTextarea-condition-1",
+                    type: "inputTextarea",
+                    text: "To demonstrate - try entering the names of some of the planets of our solar system (you need to get at least 3):",
+                    keywords: [
+                        {
+                            id: "mercury",
+                            title: "mercury",
+                            triggers: ["mercury"],
+                            response: "Mercury's craters are named after famous artists, musicians and authors."
+                        },
+                        {
+                            id: "venus",
+                            title: "venus",
+                            triggers: ["venus"],
+                            response: "Venus is the hottest planet in the solar system."
+                        },
+                        {
+                            id: "earth",
+                            title: "earth",
+                            triggers: ["earth"],
+                            response: "Earth's atmosphere protects us from meteoroids and radiation from the Sun."
+                        },
+                        {
+                            id: "mars",
+                            title: "mars",
+                            triggers: ["mars"],
+                            response: "There have been more missions to Mars than any other planet."
+                        },
+                        {
+                            id: "jupiter",
+                            title: "jupiter",
+                            triggers: ["jupiter"],
+                            response: "Jupiter has more than double the mass of all the other planets combined."
+                        },
+                        {
+                            id: "saturn",
+                            title: "saturn",
+                            triggers: ["saturn"],
+                            response: "Saturn has more moons than any other planet in the Solar System."
+                        },
+                        {
+                            id: "uranus",
+                            title: "uranus",
+                            triggers: ["uranus"],
+                            response: "Uranus has only been visited by a single spacecraft, Voyager 2."
+                        },
+                        {
+                            id: "neptune",
+                            title: "neptune",
+                            triggers: ["neptune"],
+                            response: "It takes like more than 4 hours for light to reach Neptune from the Sun."
+                        },
+                        {
+                            id: "pluto",
+                            title: "pluto",
+                            trigger: ["pluto"],
+                            response: "I hate to break it to you, but pluto isn't a planet!"
+                        }
+                    ],
+                    conditions: [
+                        {
+                            target: {
+                                id: "inputTextarea-condition-1",
+                            },
+                            test: {
+                                methodName: "keywordFoundCount",
+                                operator: "<",
+                                require: 3
+                            }
+                        }
+                    ]
+                },
+                {
+                    id: "img-planets",
+                    type: "img",
+                    path: "planets.jpg",
+                    caption: {
+                        text: "Photo by Planet Volumes on Unsplash",
+                        link: "https://unsplash.com/@planetvolumes?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
+  
+                    },
+                    conditions: [
+                        {
+                            target: {
+                                id: "inputTextarea-condition-1",
+                            },
+                            test: {
+                                methodName: "keywordFoundCount",
+                                operator: ">",
+                                require: 2
+                            }
+                        }
+                    ]
+                },
+                {
+                    id: "text-condition-met",
+                    type: "p",
+                    text: "This text element and the image above have now appeared. The visibility of these two elements was conditional on you having matched at least of the keywords in the previous input box. The input box being visible was conditional on you having found less than 3, so it has disappeared.",
+                    conditions: [
+                        {
+                            target: {
+                                id: "inputTextarea-condition-1",
+                            },
+                            test: {
+                                methodName: "keywordFoundCount",
+                                operator: ">",
+                                require: 2
+                            }
+                        }
+                    ]
+                },
+            ],
+            options: [
+                {
+                    id: "next",
+                    title: "Next",
+                    conditions: [
+                        {
+                            target: {
+                                id: "inputTextarea-condition-1",
+                            },
+                            test: {
+                                methodName: "keywordFoundCount",
+                                operator: ">",
+                                require: 2
+                            }
+                        }
+                    ]
+                } 
+            ]
+        },
+        {
+            id: "conditions-2",
+            title: "Conditions (part 2)",
+            contents: [
+                {
+                    id: "id",
+                    type: "p",
+                    text: "You can also make content or options conditional on tests that apply to previous nodes. For example, if you identified more than 4 planets on the previous page you'll see a smiley face below!"
+                },
+                {
+                    id: "img-smiley",
+                    type: "img",
+                    path: "smiley.jpg",
+                    caption: {
+                        text: "Photo by Shaurya Sagar on Unsplash",
+                        link: "https://unsplash.com/@shauryasagar?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
+  
+                    },
+                    conditions: [
+                        {
+                            target: {
+                                id: "inputTextarea-condition-1",
+                                nodeName: "conditions-1"
+                            },
+                            test: {
+                                methodName: "keywordFoundCount",
+                                operator: ">",
+                                require: 3
+                            }
+                        }
+                    ]
+                },
+            ],
+            options: [
+                {
+                    id: "next",
+                    title: "Next"
+                } 
+            ]
+        },
+        {
+            id: "conditions-3",
+            title: "Conditions (part 3)",
+            contents: [
+                {
+                    id: "inputCheckbox-condition",
+                    type: "inputCheckbox",
+                    text: "You can also use conditions to change which options are available. Select which options should appear below:",
+                    checkboxes: [
+                        {
+                            id: "option-1",
+                            title: "Option 1"
+                        },
+                        {
+                            id: "option-2",
+                            title: "Option 2"
+                        },
+                        {
+                            id: "option-3",
+                            title: "Option 3"
+                        }
+                    ]
+                },
+                {
+                    id: "next",
+                    type: "p",
+                    text: "All the options go to the same place on this occasion!",
+                    conditions: [
+                        {
+                            target: {
+                                id: "inputCheckbox-condition",
+                            },
+                            test: {
+                                methodName: "checkedCount",
+                                operator: ">",
+                                require: 0
+                            }
+                        }
+                    ]
+                }
+            ],
+            options: [
+                {
+                    id: "option-1",
+                    title: "Option 1",
+                    conditions: [
+                        {
+                            target: {
+                                id: "inputCheckbox-condition",
+                            },
+                            test: {
+                                methodName: "checkboxIsChecked",
+                                require: "option-1"
+                            }
+                        }
+                    ]
+                },
+                {
+                    id: "option-2",
+                    title: "Option 2",
+                    conditions: [
+                        {
+                            target: {
+                                id: "inputCheckbox-condition",
+                            },
+                            test: {
+                                methodName: "checkboxIsChecked",
+                                require: "option-2"
+                            }
+                        }
+                    ]
+                },
+                {
+                    id: "option-3",
+                    title: "Option 3",
+                    conditions: [
+                        {
+                            target: {
+                                id: "inputCheckbox-condition",
+                            },
+                            test: {
+                                methodName: "checkboxIsChecked",
+                                require: "option-3"
+                            }
+                        }
+                    ]
+                },
             ]
         },
 
@@ -583,6 +1097,78 @@ let scenario = {
                 } 
             ]
         },
+        {
+            id: "scenario-object",
+            title: "About the scenario object",
+            contents: [
+                {
+                    id: "text-main",
+                    type: "p",
+                    text: "In order to create a scenario you need to define a scenario object. If you've never done any programming before you'll need some help to get started, although this process is quite simple once you know a few rules. Since you're working through a 'scenario' right now, you can take a look at the scenario object that defines it. Try not to be put off by it's complexity at this stage, it'll get much clearer.",
+                    excludeFromLog: true
+                },
+                {
+                    id: "link-scenario-object-example",
+                    type: "a",
+                    text: "Click here to see the scenario object definition",
+                    link: "https://github.com/dan-leach/clinical-branching-scenario/blob/main/js/exampleScenario.js"
+                },
+                {
+                    id: "text-json",
+                    type: "p",
+                    text: "The scenario object is written using javascript object notation (JSON), and creates a receipe for the branching logic program to follow to create an interactive experience for the user. Even if you're not going to create the scenario object definition yourself, it helps to be aware of how it works. You need to be aware of a few different types of data that we'll use when creating our scenario object:",
+                    excludeFromLog: true
+                },
+                {
+                    id: "text-string",
+                    type: "p",
+                    heading: {
+                        level: 1,
+                        text: "String"
+                    },
+                    text: "A string is a series of characters: letters, numbers or special characters. For example 'abc', 'hello world' or 'My favourite number is 7!'",
+                    excludeFromLog: true
+                },
+                {
+                    id: "text-integer-float",
+                    type: "p",
+                    heading: {
+                        level: 1,
+                        text: "Integer / Float"
+                    },
+                    text: "An integer is a whole number which can be positive or negative. For example, -10, 0, 23 are integers. Floats are 'floating' point numbers e.g. 0.01 or -10.4.",
+                    excludeFromLog: true
+                },
+                {
+                    id: "text-array",
+                    type: "p",
+                    heading: {
+                        level: 1,
+                        text: "Array"
+                    },
+                    text: "An array is a series of data points. An array is denoted by square brackets and each data point within is separated by a comma. For example you could store a series of words as strings within an array: ['One', 'Two', 'Three']. The data points inside an array can be any time of data such as string, integer, object or another array.",
+                    excludeFromLog: true
+                },
+                {
+                    id: "text-object",
+                    type: "p",
+                    heading: {
+                        level: 1,
+                        text: "Object"
+                    },
+                    text: "An object is similar to an array in that it contains other data points but with an object each data point is made up of a key-value pair, also called a property. For example 'age: 10' is a key-value pair where 'age' is the key and 10 is value. An object is denoted by curly brackets and key-value pairs are separated by commas. For example: objectName: { name: 'Joe Bloggs', age: 10}. Objects can contain any data type including other objects.",
+                    excludeFromLog: true
+                }
+            ],
+            options: [
+                {
+                    id: "next",
+                    title: "Next"
+                }
+            ]
+        },
+
+
         //old example
         {
             //object defines the node appearance and behaviour

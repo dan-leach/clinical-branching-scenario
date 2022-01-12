@@ -79,15 +79,15 @@ var RootComponent = { //create the app instance, import scenario specific data f
                             for (var optionIndex in app.nodes[app.node].options) app.nodes[app.node].options[optionIndex].visible = false //set all the options to be hidden to trigger the fadeout transition
                         },
                         arrive: function(){ //called after arriving at a node
+                            scroll(0,0) //scroll to the top of the new node
                             app.nodes[app.node].visitCount++ //keep track of how many times this node has been visited
                             app.fn.nodes.updateView() //check if conditions are met for showing content and options for this node
                         }
                     },
                     contents: { //methods relating to content objects
-                        findIndex: function(contentId){ //returns the index of a content object with the id 'contentId'
-                            for (var contentIndex in app.nodes[app.node].contents){
-                                if (app.nodes[app.node].contents[contentIndex].id == contentId) return parseInt(contentIndex)
-                            }
+                        findIndex: function(contentId, nodeIndex){ //returns the index of a content object with the id 'contentId'
+                            if (!nodeIndex) nodeIndex = app.node
+                            for (var contentIndex in app.nodes[nodeIndex].contents) if (app.nodes[nodeIndex].contents[contentIndex].id == contentId) return parseInt(contentIndex)
                             console.warn("Unable to find index of contentId", contentId)
                             return false
                         },
@@ -199,7 +199,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                             getResponses: function(content){ //returns a string of the responses to keywords which have been found by the user in object 'content'
                                 var responses = ""
                                 for (var keywordIndex in content.keywords){ //loop through all the keywords in the tested object
-                                    if (content.keywords[keywordIndex].found) responses += content.keywords[keywordIndex].response + " " //if the keyword object has been found, add the response to the responses string, plus a space for separation before next
+                                    if (content.keywords[keywordIndex].found && content.keywords[keywordIndex].response) responses += content.keywords[keywordIndex].response + " " //if the keyword object has been found, add the response to the responses string, plus a space for separation before next
                                 }
                                 return responses
                             },
@@ -253,7 +253,9 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                         app.fn.alerts.askMore()
                                         return
                                     }
-                                    app.fn.alerts.showResponse(app.fn.nodes.contents.inputTextarea.getResponses(content)) //show the keyword responses for the found keywords
+                                    
+                                let responses = app.fn.nodes.contents.inputTextarea.getResponses(content)
+                                if (responses) app.fn.alerts.showResponse() //show the textarea responses for those selected
                                 }
         
                                 app.fn.nodes.updateView() //checks if any content or options on this node should now be shown
@@ -285,7 +287,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                             getResponses: function(content){ //returns a string of the responses to checkboxes which have been checked by the user in object 'content'
                                 var responses = ""
                                 for (var checkboxIndex in content.checkboxes){ //loop through all the checkbox objects in the tested object
-                                    if (content.checkboxes[checkboxIndex].checked) responses += content.checkboxes[checkboxIndex].response + " " //if the checkbox object has been checked, add the response to the responses string, plus a space for separation before next
+                                    if (content.checkboxes[checkboxIndex].checked && content.checkboxes[checkboxIndex].response) responses += content.checkboxes[checkboxIndex].response + " " //if the checkbox object has been checked, add the response to the responses string, plus a space for separation before next
                                 }
                                 return responses
                             },
@@ -347,8 +349,9 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                     app.fn.alerts.checkMore()
                                     return
                                 }
-        
-                                app.fn.alerts.showResponse(app.fn.nodes.contents.inputCheckbox.getResponses(content)) //show the checkbox responses for those selected
+                                
+                                let responses = app.fn.nodes.contents.inputCheckbox.getResponses(content)
+                                if (responses) app.fn.alerts.showResponse() //show the checkbox responses for those selected
                                 
                                 app.fn.nodes.updateView()
         
@@ -374,7 +377,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                             },
                             getResponse: function(content){ //returns a string of the response to the radio which is selected by the user in object 'content'
                                 for (var radioIndex in content.radios){ //loop through all the radio objects in the tested object
-                                    if (content.radios[radioIndex].id == content.selected) return content.radios[radioIndex].response //if the radio object is selected, return its response
+                                    if (content.radios[radioIndex].id == content.selected && content.radios[radioIndex].response) return content.radios[radioIndex].response //if the radio object is selected, return its response
                                 }
                                 return false
                             },
@@ -426,7 +429,8 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                     return
                                 }
         
-                                app.fn.alerts.showResponse(app.fn.nodes.contents.inputRadio.getResponse(content)) //show the radio response for that selected
+                                let responses = app.fn.nodes.contents.inputRadio.getResponses(content)
+                                if (responses) app.fn.alerts.showResponse() //show the radio responses for those selected
                                 
                                 app.fn.nodes.updateView()
         
@@ -435,10 +439,9 @@ var RootComponent = { //create the app instance, import scenario specific data f
                         }
                     },
                     options: { //methods relating to option objects
-                        findIndex: function(optionId){ //returns the index of an option with the ID 'optionId' within the current node
-                            for (var optionIndex in app.nodes[app.node].options){ //loop through all the option objects
-                                if (app.nodes[app.node].options[optionIndex].id == optionId) return parseInt(optionIndex) //returns the current optionIndex if the id matches 'optionId'
-                            }
+                        findIndex: function(optionId, nodeIndex){ //returns the index of an option with the ID 'optionId' within the current node
+                            if (!nodeIndex) nodeIndex = app.node
+                            for (var optionIndex in app.nodes[nodeIndex].options) if (app.nodes[nodeIndex].options[optionIndex].id == optionId) return parseInt(optionIndex) //returns the current optionIndex if the id matches 'optionId'
                             console.warn("Unable to find index of optionId", optionId)
                             return false
                         },
@@ -539,12 +542,12 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                     condition.test.method = app.fn.nodes.tests[condition.test.methodName] //get the test method from the methodName
                                     break
                                 case "contents":
-                                    condition.target.index = app.fn.nodes.contents.findIndex(condition.target.id) //get the index of the target content object from its id
+                                    condition.target.index = app.fn.nodes.contents.findIndex(condition.target.id, condition.target.nodeIndex) //get the index of the target content object from its id
                                     condition.test.subject = app.nodes[condition.target.nodeIndex].contents[condition.target.index] //create property 'subject' and set it to the targetted content object
                                     condition.test.method = app.fn.nodes.contents[condition.test.subject.type].tests[condition.test.methodName] //get the test method from the methodName
                                     break
                                 case "options":
-                                    condition.target.index = app.fn.nodes.options.findIndex(condition.target.id) //get the index of the target option object from its id
+                                    condition.target.index = app.fn.nodes.options.findIndex(condition.target.id, condition.target.nodeIndex) //get the index of the target option object from its id
                                     condition.test.subject = app.nodes[condition.target.nodeIndex].options[condition.target.index] //create property 'subject' and set it to the targetted option object
                                     condition.test.method = app.fn.nodes.options.tests[condition.test.methodName] //get the test method from the methodName
                                     break
@@ -553,6 +556,8 @@ var RootComponent = { //create the app instance, import scenario specific data f
                         }
                         if (app.fn.conditions.allMet(el)) {
                             app.fn.conditions.show(el)
+                        } else {
+                            app.fn.conditions.hide(el)
                         }
                     },
                     runTest: function(condition){ //runs the test for a given condition, sets condition.met = true if condition is met
@@ -574,6 +579,9 @@ var RootComponent = { //create the app instance, import scenario specific data f
                     show: function(el){ //sets an element to be visible and seen, parameter el should be an object within nodes[].options[] or nodes[].content
                         el.visible = true
                         el.seen = true
+                    },
+                    hide: function(el){ //sets an element to be not visible
+                        el.visible = false
                     }
                 }
             }
