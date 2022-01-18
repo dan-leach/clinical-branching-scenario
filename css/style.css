@@ -40,9 +40,12 @@ textarea {
     text-align:justify;
 }
 
-.fade-enter-active, .fade-leave-active {
-    transition: opacity .5s;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
 }
-.fade-enter, .fade-leave-to {
-    opacity: 0;
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }

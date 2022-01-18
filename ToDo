@@ -1,16 +1,32 @@
-Add content types:
-    single choice (radio boxes)
-    select from drop down menu
-    fill in the blanks
+General:
+    Expand to full screen
+    Add console warnings for errors like test fns not found and many others
+    let vs var?
+    arrow functions?
+    semicolons?
 
-test all condition methods
+Content:
+    New types:
+        select from drop down menu
+        fill in the blanks
+        expandable blocks
+        ?tabs
+        video
+        html - safely!
+    add open in new window icon to links
+    Allow styling of certain items
+    convert contents to components
 
-let vs var
-arrow functions?
-semicolons?
+Conditions:
+    test all condition methods
+    consolidate standard tests check both in standard tests object and content type specific test fn for each
 
-Graphical improvements:
-    animate new case note entries
+Casenotes:
+    animate new entries
+    place content within collapsed div under heading
+
+
+
 
 Prelaunch:
-    - change to vue production version
+    - change to vue production version - with specific version number to avoid breaking changes

@@ -4,6 +4,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
     el: '#app',
     data() {
         return {
+            transitionActive: true,
             title: scenario.title, 
             subtitle: scenario.subtitle,
             scenario: {
@@ -75,8 +76,8 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 log: app.fn.scenario.log.getLog() //generate the log with notes, feedback, user inputs and score
                             })
                             app.fn.scenario.updateScore() //update the overall score
-                            for (var contentIndex in app.nodes[app.node].contents) app.nodes[app.node].contents[contentIndex].visible = false //set all the contents to be hidden to trigger the fadeout transition
-                            for (var optionIndex in app.nodes[app.node].options) app.nodes[app.node].options[optionIndex].visible = false //set all the options to be hidden to trigger the fadeout transition
+                            //for (var contentIndex in app.nodes[app.node].contents) app.nodes[app.node].contents[contentIndex].visible = false //set all the contents to be hidden to trigger the fadeout transition
+                            //for (var optionIndex in app.nodes[app.node].options) app.nodes[app.node].options[optionIndex].visible = false //set all the options to be hidden to trigger the fadeout transition
                         },
                         arrive: function(){ //called after arriving at a node
                             scroll(0,0) //scroll to the top of the new node
@@ -254,8 +255,8 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                         return
                                     }
                                     
-                                let responses = app.fn.nodes.contents.inputTextarea.getResponses(content)
-                                if (responses) app.fn.alerts.showResponse() //show the textarea responses for those selected
+                                    let responses = app.fn.nodes.contents.inputTextarea.getResponses(content)
+                                    if (responses) app.fn.alerts.showResponse(responses) //show the textarea responses for those selected
                                 }
         
                                 app.fn.nodes.updateView() //checks if any content or options on this node should now be shown
@@ -351,7 +352,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 }
                                 
                                 let responses = app.fn.nodes.contents.inputCheckbox.getResponses(content)
-                                if (responses) app.fn.alerts.showResponse() //show the checkbox responses for those selected
+                                if (responses) app.fn.alerts.showResponse(responses) //show the checkbox responses for those selected
                                 
                                 app.fn.nodes.updateView()
         
@@ -429,8 +430,8 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                     return
                                 }
         
-                                let responses = app.fn.nodes.contents.inputRadio.getResponses(content)
-                                if (responses) app.fn.alerts.showResponse() //show the radio responses for those selected
+                                let responses = app.fn.nodes.contents.inputRadio.getResponse(content)
+                                if (responses) app.fn.alerts.showResponse(responses) //show the radio responses for those selected
                                 
                                 app.fn.nodes.updateView()
         
@@ -452,8 +453,10 @@ var RootComponent = { //create the app instance, import scenario specific data f
                             option.selectCount++ //increment the counter for the number of times this option has been selected by the user
                             if (option.onceOnly) option.disabled = true //prevent option being selected further times if it has onceOnly property set true
                             app.fn.nodes.events.exit() //call the node exit event
-                            setTimeout(function() {
+                            app.transitionActive = true
+                            setTimeout(function() { // to allow time for node we're leaving to fadeout
                                 app.node = goTo //change to the new node
+                                app.transitionActive = false
                                 app.fn.nodes.events.arrive() //call the node arrive event
                             }, 500)
                         },
@@ -617,6 +620,10 @@ var RootComponent = { //create the app instance, import scenario specific data f
                 }
             }
         }
+    },
+    mounted() {
+        document.getElementById('loader').setAttribute('cloak', true) //makes the loader animation hidden once app loaded
+        document.getElementById('app').removeAttribute('cloak') //makes the app visible once loaded
     }
 }
 
@@ -626,3 +633,4 @@ const app = createApp.mount('#app')
 app.node = app.config.nodes.startNode
 app.nodes[app.node].visitCount++ //arrive event does not run for start node, so increment manually
 app.fn.nodes.updateView() //runs after app created, to ensure appropriate check of conditions and setting seen properties for node 0
+app.transitionActive = false //trigger the fadein

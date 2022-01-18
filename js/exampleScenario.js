@@ -6,7 +6,7 @@ let scenario = {
             developerPanelVisible: true
         },
         nodes: {
-            startNode: 24,
+            startNode: 16,
             //object of configuration options relating to nodes
             //required
             contents: {
@@ -18,26 +18,26 @@ let scenario = {
                     minLength: 10,
                         //integer defines minimum length in characters of user entry
                         //required
-                    defaultScore: 10
+                    defaultScore: 0
                         //integer defines score for finding keyword if not defined in keyword object
                         //required
                 },
                 inputCheckbox: {
                     defaultScore: {
-                        recommended: 10,
+                        recommended: 0,
                         //integer defines score for selected recommended checkbox if not defined in checkbox object
                         //required
-                        notRecommended: -10
+                        notRecommended: 0
                         //integer defines score for selected not recommended checkbox if not defined in checkbox object
                         //required
                     }
                 },
                 inputRadio: {
                     defaultScore: {
-                        recommended: 10,
+                        recommended: 0,
                         //integer defines score for selected recommended radio if not defined in radio object
                         //required
-                        notRecommended: -10
+                        notRecommended: 0
                         //integer defines score for selected not recommended radio if not defined in radio object
                         //required
                     }
@@ -915,7 +915,7 @@ let scenario = {
                 {
                     id: "text-condition-met",
                     type: "p",
-                    text: "This text element and the image above have now appeared. The visibility of these two elements was conditional on you having matched at least of the keywords in the previous input box. The input box being visible was conditional on you having found less than 3, so it has disappeared.",
+                    text: "This text element and the image above have now appeared. The visibility of these two elements was conditional on you having matched at least three of the keywords in the previous input box. The input box being visible was conditional on you having found less than 3, so it has disappeared.",
                     conditions: [
                         {
                             target: {
