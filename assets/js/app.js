@@ -155,7 +155,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 }
                             },
                             getNotes: function(content){ //returns HTML template string as image title text with link to open the image
-                                return "<a href='img/" + content.path + "' target='_blank' rel='noopener noreferrer'>" + content.text + "</a>"
+                                return "<a href='scenario/img/" + content.path + "' target='_blank' rel='noopener noreferrer'>" + content.text + "</a>"
                             }
                         },
                         inputTextarea: {
@@ -593,6 +593,16 @@ var RootComponent = { //create the app instance, import scenario specific data f
     methods: {
         testFn: function(){ // temporary function
 
+        },
+        toggleFullScreen: function(){ //toggle in/out of full screen mode
+            const elem = document.documentElement;
+            if (!document.fullscreenElement) {
+                elem.requestFullscreen().catch(err => {
+                  console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
         }
     },
     beforeCreate() { //adds properties to objects from scenario that are required for proper functioning of the app logic
