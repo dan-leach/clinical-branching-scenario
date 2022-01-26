@@ -6,7 +6,7 @@ let scenario = {
             developerPanelVisible: true
         },
         nodes: {
-            startNode: 16,
+            startNode: 0,
             //object of configuration options relating to nodes
             //required
             contents: {
