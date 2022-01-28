@@ -1,12 +1,12 @@
 let scenario = {
-    title: "Example Scenario",
-    subtitle: "An example of how to create a scenario object with comments to guide usage",
+    title: "Demonstration Scenario",
+    subtitle: "Technical demonstration of the clinical branching scenario application",
     config: {
         development: {
-            developerPanelVisible: true
+            developerPanelVisible: true,
+            startNode: 9
         },
         nodes: {
-            startNode: 0,
             //object of configuration options relating to nodes
             //required
             contents: {
@@ -53,19 +53,25 @@ let scenario = {
             contents: [
                 {
                     id: "text-intro",
-                    type: "p",
-                    text: "Welcome to this example scenario. This is not a clinical scenario but will simply demonstrate the capabilities of this branching scenario application and provide an introduction to what is required to create a scenario."
+                    type: "p_img",
+                    text: "Welcome to this branching scenario. This version will demonstrate the capabilities of the application and provide an introduction to what is required to create a scenario.",
+                    imgWidth: "7",
+                    img: {
+                        path: "doctor_laptop.jpg",
+                        text: "A doctor using a laptop"
+                    }
                 },
                 {
-                    id: "interface-element-list",
-                    type: "ul",
-                    text: "We'll start by looking at the different elements of the user interface. If you take a look at the interface you'll see several components:",
-                    items: [
-                        "Page header",
-                        "Main content area",
-                        "Case notes",
-                        "Developer panel"
-                    ]
+                    id: "spacer",
+                    type: "spacer",
+                    size: 5
+                },
+                {
+                    id: "heading-next",
+                    type: "h",
+                    level: 3,
+                    center: true,
+                    text: "Click 'next' to continue..."
                 }
             ],
             options: [
@@ -76,16 +82,319 @@ let scenario = {
             ]
         },
         {
-            id: "about-page-header",
-            title: "The page header",
+            id: "scenario-structure",
+            title: "Scenario Structure",
             contents: [
                 {
-                    id: "text-main",
+                    id: "p-1",
                     type: "p",
-                    text: "The page header includes the scenario title and (optionally) a subtitle. This doesn't change as the user progresses through the scenario."
+                    text: "An immersive and compelling scenario will provide the user with information and choices. The choices they make will change how the scenario progresses. To build this scenario we need to break up the scenario into parts."
+                },
+                {
+                    id: "h-1",
+                    type: "h",
+                    level: 3,
+                    center: true,
+                    text: "We'll refer to each part of a scenario a node."
+                },
+                {
+                    id: "p_img-1",
+                    type: "p_img",
+                    text: "This diagram represents the node-based structure of a scenario. In this example, progression through the first couple of nodes is linear, but later choices the user makes will taken them on very different paths through the scenario. Sometimes this might mean revisiting certain nodes, or reaching a different scenario ending, depending on their decision making.",
+                    imgWidth: "8",
+                    img: {
+                        path: "scenario_structure.jpeg",
+                        text: "Diagram of the node-based structure of a scenario",
+                        caption: {
+                            text: "Diagram of the node-based structure of a scenario"
+                        }
+                    }
                 }
             ],
             options: [
+                {
+                    id: "back",
+                    title: "Back",
+                    goTo: "welcome"
+                },
+                {
+                    id: "next",
+                    title: "Next"
+                }
+            ]
+        },
+        {
+            id: "node-structure",
+            title: "Node Structure",
+            contents: [
+                {
+                    id: "p-1",
+                    type: "p",
+                    text: "We've established that a scenario is made up of nodes, and a user progresses through that scenario by moving from node to node. But what is a node?"
+                },
+                {
+                    id: "h-1",
+                    type: "h",
+                    level: 3,
+                    center: true,
+                    text: "A node is principally made up of contents and options."
+                },
+                {
+                    id: "img-1",
+                    type: "img",
+                    path: "node_structure.jpeg",
+                    text: "Diagram of the structure of a node",
+                    caption: {
+                        text: "Diagram of the structure of a node"
+                    }
+                },
+                
+                {
+                    id: "p-2",
+                    type: "p",
+                    text: "A node also has some other properties, such as a title. The node you're viewing right now has the title 'Node Structure' which appears in the header of the main panel."
+                }
+            ],
+            options: [
+                {
+                    id: "back",
+                    title: "Back",
+                    goTo: "scenario-structure"
+                },
+                {
+                    id: "next",
+                    title: "Next"
+                }
+            ]
+        },
+        {
+            id: "node-contents",
+            title: "Node Contents",
+            contents: [
+                {
+                    id: "p-1",
+                    type: "p",
+                    text: "Each content element appears in the body of the main panel. For example, this paragraph is a content element of the current node."
+                },
+                {
+                    id: "ul-1",
+                    type: "ul",
+                    text: "There are various differnt types of content elements that we can use:",
+                    items: [
+                        "Paragraph text",
+                        "Headings (of various levels)",
+                        "Images (optionally with captions)",
+                        "Links",
+                        "Bullet-point or numbered lists",
+                        "Interactive elements"
+                    ]
+                },
+                {
+                    id: "h-1",
+                    type: "h",
+                    level: 3,
+                    text: "Look out for examples of different types of content elements as you progress through this demonstration."
+                },
+                {
+                    id: "p-2",
+                    type: "p",
+                    text: "Content elements have various properties depending on their type which determine their appearance and behaviour. For example, a heading element has the property 'level' which can have a value of 1, 2 or 3 to change the size of the heading."
+                },
+                {
+                    id: "p-3",
+                    type: "p",
+                    text: "It's likely that more types of content elements will need to be created as development progresses."
+                }
+            ],
+            options: [
+                {
+                    id: "back",
+                    title: "Back",
+                    goTo: "node-structure"
+                },
+                {
+                    id: "next",
+                    title: "Next"
+                }
+            ]
+        },
+        {
+            id: "node-options",
+            title: "Node Options",
+            contents: [
+                {
+                    id: "p-1",
+                    type: "p",
+                    text: "Each option appears in the footer of the main panel. When the user selects an option it takes them to a particular node. All the options that you've seen so far have been either 'Next' or 'Back'."
+                },
+                {
+                    id: "p_img-1",
+                    type: "p_img",
+                    text: "We'll now demonstrate how you can change the way a user progresses through the scenario with the use of options. This diagram show how the options below can take you through a pathway of nodes in different ways.",
+                    imgWidth: 8,
+                    img: {
+                        path: "example_options_start.jpeg",
+                        text: "Options demonstration diagram",
+                        caption: {
+                            text: "Options demonstration diagram"
+                        }
+                    }
+                }
+            ],
+            options: [
+                {
+                    id: "back",
+                    title: "Back",
+                    goTo: "node-contents"
+                },
+                {
+                    id: "option-1",
+                    title: "Option 1",
+                    goTo: "options-demo-1"
+                },
+                {
+                    id: "option-2",
+                    title: "Option 2",
+                    goTo: "options-demo-2"
+                },
+                {
+                    id: "option-3",
+                    title: "Option 3",
+                    goTo: "options-demo-3"
+                }
+            ]
+        },
+        {
+            id: "options-demo-1",
+            title: "Options Demo - Option 1",
+            contents: [
+                {
+                    id: "img-1",
+                    type: "img",
+                    path: "example_options_1.jpeg",
+                    text: "Options demonstration diagram"
+                }
+            ],
+            options: [
+                {
+                    id: "next",
+                    title: "Next",
+                    goTo: "options-demo-end"
+                }
+            ]
+        },
+        {
+            id: "options-demo-2",
+            title: "Options Demo - Option 2",
+            contents: [
+                {
+                    id: "img-1",
+                    type: "img",
+                    path: "example_options_2.jpeg",
+                    text: "Options demonstration diagram"
+                }
+            ],
+            options: [
+                {
+                    id: "next",
+                    title: "Next",
+                    goTo: "options-demo-end"
+                }
+            ]
+        },
+        {
+            id: "options-demo-3",
+            title: "Options Demo - Option 3",
+            contents: [
+                {
+                    id: "img-1",
+                    type: "img",
+                    path: "example_options_3.jpeg",
+                    text: "Options demonstration diagram"
+                }
+            ],
+            options: [
+                {
+                    id: "next",
+                    title: "Next",
+                    goTo: "options-demo-end"
+                }
+            ]
+        },
+        {
+            id: "options-demo-end",
+            title: "Options Demo - End",
+            contents: [
+                {
+                    id: "p_img-1",
+                    type: "p_img",
+                    text: "Hopefully you can see how your decisions can change the way you progress through this scenario. You can click 'Back' to restart the Example Options Path and try a different route. This is clearly a very simple pathway, but it could be much more complex if required to reflect the complexity of real-world clinical decision making.",
+                    imgWidth: 8,
+                    img: {
+                        path: "example_options_end.jpeg",
+                        text: "Options demonstration diagram",
+                        caption: {
+                            text: "Options demonstration diagram"
+                        }
+                    }
+                },
+                {
+                    id: "h-1",
+                    type: "h",
+                    level: 3,
+                    center: true,
+                    text: "Once you're finished with this Example Options Path, click 'Next' to move on."
+                }
+            ],
+            options: [
+                {
+                    id: "back",
+                    title: "Back",
+                    goTo: "node-options"
+                },
+                {
+                    id: "next",
+                    title: "Next"
+                }
+            ]
+        },
+        {
+            id: "review-1",
+            title: "Review",
+            contents: [
+                {
+                    id: "p_img-1",
+                    type: "p_img",
+                    text: "A scenario is made up of nodes. The nodes are linked together to create a pathway which determines how the scenario progresses.",
+                    imgWidth: "8",
+                    img: {
+                        path: "scenario_structure.jpeg",
+                        text: "Diagram of the node-based structure of a scenario",
+                        caption: {
+                            text: "Diagram of the node-based structure of a scenario"
+                        }
+                    }
+                },
+                {
+                    id: "p_img-2",
+                    type: "p_img",
+                    text: "Each node is made up of contents and options. The contents are what will be displayed to the user. The user chooses between the options which will determine which node they arrive at next.",
+                    imgWidth: 8,
+                    img: {
+                        path: "node_structure.jpeg",
+                        text: "Diagram of the structure of a node",
+                        caption: {
+                            text: "Diagram of the structure of a node"
+                        }
+                    }
+                }
+            ],
+            options: [
+                {
+                    id: "back",
+                    title: "Back",
+                    goTo: "options-demo-end"
+                },
                 {
                     id: "next",
                     title: "Next"

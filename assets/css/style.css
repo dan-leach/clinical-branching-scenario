@@ -23,7 +23,7 @@
     justify-content: center;
 }
 
-.content-center {
+.contentCenter {
     text-align: center;
 }
 
@@ -62,4 +62,14 @@ textarea {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #370096;
+    border-color: #370096;
+}
+.btn-primary:hover {
+    background-color: #00a100;
+    border-color: #00a100;
 }

@@ -158,6 +158,26 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 return "<a href='scenario/img/" + content.path + "' target='_blank' rel='noopener noreferrer'>" + content.text + "</a>"
                             }
                         },
+                        p_img: {
+                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'img'
+                                seen: function(content){ //returns true if object 'content' has been seen
+                                    return content.seen
+                                }
+                            },
+                            getNotes: function(content){ //returns HTML template string as image title text with link to open the image
+                                return "<p>" + content.text + "</p><a href='scenario/img/" + content.img.path + "' target='_blank' rel='noopener noreferrer'>" + content.img.text + "</a>"
+                            }
+                        },
+                        spacer: {
+                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'img'
+                                seen: function(content){ //returns true if object 'content' has been seen
+                                    return content.seen
+                                }
+                            },
+                            getNotes: function(content){ //returns empty string as notes not required for spacer
+                                return ""
+                            }
+                        },
                         inputTextarea: {
                             tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'inputTextarea'
                                 seen: function(content){ //returns true if object 'content' has been seen
@@ -640,7 +660,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
 const createApp = Vue.createApp(RootComponent)
 const app = createApp.mount('#app')
 
-app.node = app.config.nodes.startNode
+app.node = app.config.development.startNode
 app.nodes[app.node].visitCount++ //arrive event does not run for start node, so increment manually
 app.fn.nodes.updateView() //runs after app created, to ensure appropriate check of conditions and setting seen properties for node 0
 app.transitionActive = false //trigger the fadein
