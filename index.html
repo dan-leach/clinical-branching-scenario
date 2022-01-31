@@ -44,6 +44,12 @@
                                             </p>
                                         </div>
 
+                                        <!--emphasis-->
+                                        <div v-if="content.type == 'emp'">
+                                            <h5 class="contentCenter"><i>{{content.text}}</i></h5>
+                                            <br>
+                                        </div>
+
                                         <!--spacer-->
                                         <div v-if="content.type == 'spacer'" :style="{ height: content.size + 'vh' }"></div>
 

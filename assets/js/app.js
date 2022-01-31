@@ -122,6 +122,16 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 return "<p><strong>" + content.text + "</strong></p>"
                             }
                         },
+                        emp: { 
+                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'p'
+                                seen: function(content){ //returns true if object 'content' has been seen
+                                    return content.seen
+                                }
+                            },
+                            getNotes: function(content){ //returns HTML template string with the with text as paragraph
+                                return "<p>" + content.text + "</p>"
+                            }
+                        },
                         ul: {
                             tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'h'
                                 seen: function(content){ //returns true if object 'content' has been seen
