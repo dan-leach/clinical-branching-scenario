@@ -164,7 +164,7 @@
                         <h2>Case notes</h2>
                     </div>
                     <div class="card-body card-content scroll">
-                        <div v-for="element in scenario.log.slice().reverse()">
+                        <div v-for="element in scenario.notes.slice().reverse()">
                             <div v-if="element.notes">
                                 <strong>{{nodes[element.node].title}}: </strong>
                                 <span v-html="element.notes"></span>

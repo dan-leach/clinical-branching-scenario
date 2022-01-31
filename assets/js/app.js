@@ -4,10 +4,10 @@ var RootComponent = { //create the app instance, import scenario specific data f
     el: '#app',
     data() {
         return {
-            transitionActive: true,
             title: scenario.title, 
             subtitle: scenario.subtitle,
             scenario: {
+                notes: [],
                 log: [],
                 score: {
                     achieved: 0,
@@ -15,6 +15,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                 }
             },
             config: scenario.config,
+            transitionActive: true,
             node: 0,
             nodes: scenario.nodes,
             fn: { //object containing organised methods
@@ -70,14 +71,18 @@ var RootComponent = { //create the app instance, import scenario specific data f
                     },
                     events: { //methods called on node level event occurance
                         exit: function(){ //called before leaving a node
+                            if (app.nodes[app.node].addNotesEachVisit || app.nodes[app.node].visitCount === 1){ //only add to casenotes after first visit to node, unless node has addNotesEachVisit property
+                                app.scenario.notes.push({ //push an object into the log array 
+                                    node: app.node, //the index of the node we're leaving
+                                    notes: app.fn.scenario.notes.get(), //generate the casenotes for the node we're leaving - shown in the casenotes panel
+                                })
+                            }
                             app.scenario.log.push({ //push an object into the log array 
                                 node: app.node, //the index of the node we're leaving
-                                notes: app.fn.scenario.log.getNotes(), //generate the casenotes for the node we're leaving - shown in the casenotes panel
-                                log: app.fn.scenario.log.getLog() //generate the log with notes, feedback, user inputs and score
+                                log: app.fn.scenario.log.get() //generate the log with notes, feedback, user inputs and score
                             })
                             app.fn.scenario.updateScore() //update the overall score
-                            //for (var contentIndex in app.nodes[app.node].contents) app.nodes[app.node].contents[contentIndex].visible = false //set all the contents to be hidden to trigger the fadeout transition
-                            //for (var optionIndex in app.nodes[app.node].options) app.nodes[app.node].options[optionIndex].visible = false //set all the options to be hidden to trigger the fadeout transition
+                            console.log(app.scenario)
                         },
                         arrive: function(){ //called after arriving at a node
                             scroll(0,0) //scroll to the top of the new node
@@ -507,18 +512,20 @@ var RootComponent = { //create the app instance, import scenario specific data f
                     }
                 },
                 scenario: {
-                    log: {
-                        getNotes: function(){ //returns a string with the notes from each content object of the current node
+                    notes: {
+                        get: function(){ //returns a string with the notes from each content object of the current node
                             var notes = ""
-                            if (app.nodes[app.node].excludeFromLog) return notes //return blank if entire node is excluded
+                            if (app.nodes[app.node].excludeFromNotes) return notes //return blank if entire node is excluded
                             for (var contentIndex in app.nodes[app.node].contents){ //loop through all the content objects
                                 var content = app.nodes[app.node].contents[contentIndex] //define the current content object
-                                if (content.excludeFromLog) continue
+                                if (content.excludeFromNotes) continue
                                 notes += app.fn.nodes.contents[content.type].getNotes(content) //call the getNotes method for this content object
                             }
                             return notes
-                        },
-                        getLog: function(){
+                        }
+                    },
+                    log: {
+                        get: function(){
                             var log = ""
                             if (app.nodes[app.node].excludeFromLog) return log //return blank if entire node is excluded
                             for (var contentIndex in app.nodes[app.node].contents){ //loop through all the content objects
@@ -670,7 +677,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
 const createApp = Vue.createApp(RootComponent)
 const app = createApp.mount('#app')
 
-app.node = app.config.development.startNode
+app.node = app.config.development.startNode //set the current node to the requested starting node
 app.nodes[app.node].visitCount++ //arrive event does not run for start node, so increment manually
 app.fn.nodes.updateView() //runs after app created, to ensure appropriate check of conditions and setting seen properties for node 0
 app.transitionActive = false //trigger the fadein

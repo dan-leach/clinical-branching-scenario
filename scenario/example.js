@@ -49,7 +49,7 @@ let scenario = {
         {
             id: "welcome",
             title: "Welcome",
-            excludeFromLog: true,
+            excludeFromNotes: true,
             contents: [
                 {
                     id: "p_img-1",
@@ -87,7 +87,7 @@ let scenario = {
                     id: "p-1",
                     type: "p",
                     text: "An immersive and compelling scenario will provide the user with information and choices. The choices they make will change how the scenario progresses. To build this scenario we need to break up the scenario into parts.",
-                    excludeFromLog: true
+                    excludeFromNotes: true
                 },
                 {
                     id: "emp-1",
@@ -129,13 +129,13 @@ let scenario = {
                     id: "p-1",
                     type: "p",
                     text: "We've established that a scenario is made up of nodes, and a user progresses through that scenario by moving from node to node. But what is a node?",
-                    excludeFromLog: true
+                    excludeFromNotes: true
                 },
                 {
                     id: "p-2",
                     type: "p",
                     text: "A node is a step along the pathway that makes up a scenario. Each time an option button at the bottom is clicked, the user moves from one node to another.",
-                    excludeFromLog: true
+                    excludeFromNotes: true
                 },
                 {
                     id: "emp-1",
@@ -156,7 +156,7 @@ let scenario = {
                     id: "p-3",
                     type: "p",
                     text: "A node also has some other properties, such as a title. The node you're viewing right now has the title 'Node Structure' which appears in the header of the main panel.",
-                    excludeFromLog: true
+                    excludeFromNotes: true
                 }
             ],
             options: [
@@ -180,7 +180,7 @@ let scenario = {
                     id: "p-1",
                     type: "p",
                     text: "Each content element appears in the body of the main panel. For example, this paragraph is a content element of the current node.",
-                    excludeFromLog: true
+                    excludeFromNotes: true
                 },
                 {
                     id: "ul-1",
@@ -199,19 +199,19 @@ let scenario = {
                     id: "emp-1",
                     type: "emp",
                     text: "Look out for examples of different types of content elements as you progress through this demonstration.",
-                    excludeFromLog: true
+                    excludeFromNotes: true
                 },
                 {
                     id: "p-2",
                     type: "p",
                     text: "Content elements have various properties depending on their type which determine their appearance and behaviour. For example, a heading element has the property 'level' which can have a value of 1, 2 or 3 to change the size of the heading.",
-                    excludeFromLog: true
+                    excludeFromNotes: true
                 },
                 {
                     id: "p-3",
                     type: "p",
                     text: "It's likely that more types of content elements will need to be created as development progresses.",
-                    excludeFromLog: true
+                    excludeFromNotes: true
                 }
             ],
             options: [
@@ -230,7 +230,7 @@ let scenario = {
         {
             id: "node-options",
             title: "Node Options",
-            excludeFromLog: true,
+            excludeFromNotes: true,
             contents: [
                 {
                     id: "p-1",
@@ -278,7 +278,7 @@ let scenario = {
         {
             id: "options-demo-1",
             title: "Options Demo - Option 1",
-            excludeFromLog: true,
+            excludeFromNotes: true,
             contents: [
                 {
                     id: "img-1",
@@ -298,7 +298,7 @@ let scenario = {
         {
             id: "options-demo-2",
             title: "Options Demo - Option 2",
-            excludeFromLog: true,
+            excludeFromNotes: true,
             contents: [
                 {
                     id: "img-1",
@@ -318,7 +318,7 @@ let scenario = {
         {
             id: "options-demo-3",
             title: "Options Demo - Option 3",
-            excludeFromLog: true,
+            excludeFromNotes: true,
             contents: [
                 {
                     id: "img-1",
@@ -338,7 +338,7 @@ let scenario = {
         {
             id: "options-demo-end",
             title: "Options Demo - End",
-            excludeFromLog: true,
+            excludeFromNotes: true,
             contents: [
                 {
                     id: "p_img-1",
@@ -380,7 +380,7 @@ let scenario = {
         {
             id: "review-1",
             title: "Review",
-            excludeFromLog: true,
+            excludeFromNotes: true,
             contents: [
                 {
                     id: "emp-1",
@@ -445,12 +445,12 @@ let scenario = {
                     id: "p-2",
                     type: "p",
                     text: "For example, some text will appear below depending on what path or paths you took through the Example Options Path earlier.",
-                    excludeFromLog: true
+                    excludeFromNotes: true
                 },
                 {
                     id: "emp-2",
                     type: "emp",
-                    excludeFromLog: true,
+                    excludeFromNotes: true,
                     text: "You took a path through option 1.",
                     conditions: [
                         {
@@ -469,7 +469,7 @@ let scenario = {
                 {
                     id: "emp-3",
                     type: "emp",
-                    excludeFromLog: true,
+                    excludeFromNotes: true,
                     text: "You took a path through option 2.",
                     conditions: [
                         {
@@ -488,7 +488,7 @@ let scenario = {
                 {
                     id: "emp-4",
                     type: "emp",
-                    excludeFromLog: true,
+                    excludeFromNotes: true,
                     text: "You took a path through option 3.",
                     conditions: [
                         {
@@ -525,7 +525,7 @@ let scenario = {
                 {
                     id: "p_img-1",
                     type: "p_img",
-                    excludeFromLog: true,
+                    excludeFromNotes: true,
                     text: "Earlier, we mentioned different types of contents. In addition to the static types such as text or images, we can create interactive elements. This can be a useful way to encourage user engagement, but when combined with conditions can be a particularly powerful way to make a scenario respond to a users decisions.",
                     imgWidth: 8,
                     img: {
@@ -576,7 +576,7 @@ let scenario = {
                 {
                     id: "inputTextarea-1",
                     type: "inputTextarea",
-                    excludeFromLog: true,
+                    excludeFromNotes: true,
                     text: "Example: Please enter the names of as many of the planets of our solar system as you can:",
                     keywords: [
                         {
@@ -638,13 +638,13 @@ let scenario = {
                 {
                     id: "p-1",
                     type: "p",
-                    excludeFromLog: true,
+                    excludeFromNotes: true,
                     text: "This is an example of a textarea input, which is a type of content element. We can define keywords which will generate certain responses. This is a good way of making users thing about what information they need, or what actions they'd like to take. This way, the user only finds out information they've asked for and can only choose options they've thought of which is more like real clinical decision making."
                 },
                 {
                     id: "emp-1",
                     type: "emp",
-                    excludeFromLog: true,
+                    excludeFromNotes: true,
                     text: "The 'Next' button won't appear until you've identified at least 3 planets!"
                 }
             ],
@@ -676,7 +676,7 @@ let scenario = {
         {
             id: "interactive-elements-2",
             title: "Interactive elements (Part 2)",
-            excludeFromLog: true,
+            excludeFromNotes: true,
             contents: [
                 {
                     id: "p-1",
@@ -852,7 +852,7 @@ let scenario = {
                 {
                     id: "inputCheckbox-1",
                     type: "inputCheckbox",
-                    excludeFromLog: true,
+                    excludeFromNotes: true,
                     text: "Please select one or more options:",
                     checkboxes: [
                         {
@@ -875,7 +875,7 @@ let scenario = {
                 {
                     id: "inputRadio-1",
                     type: "inputRadio",
-                    excludeFromLog: true,
+                    excludeFromNotes: true,
                     text: "Please select an option:",
                     radios: [
                         {
@@ -939,19 +939,19 @@ let scenario = {
                     id: "emp-1",
                     type: "emp",
                     text: "Let's briefly review what we've covered so far.",
-                    excludeFromLog: true
+                    excludeFromNotes: true
                 },
                 {
                     id: "p-1",
                     type: "p",
                     text: "A scenario is made up of nodes. The nodes are linked together to create a pathway which determines how the scenario progresses.",
-                    excludeFromLog: true
+                    excludeFromNotes: true
                 },
                 {
                     id: "p-2",
                     type: "p",
                     text: "Each node is made up of contents and options. The contents are what will be displayed to the user. The user chooses between the options which will determine which node they arrive at next.",
-                    excludeFromLog: true
+                    excludeFromNotes: true
                 },
                 {
                     id: "p-3",
@@ -1023,7 +1023,7 @@ let scenario = {
                     id: "text-exclude-from-log-demo",
                     type: "p",
                     text: "For example, when you move on from this node, this paragraph of text will not appear in the casenotes as it is set to be excluded.",
-                    excludeFromLog: true
+                    excludeFromNotes: true
                 },
                 {
                     id: "text-img-in-case-notes",
@@ -1052,7 +1052,7 @@ let scenario = {
                 {
                     id: "text-main",
                     type: "p",
-                    text: "At the bottom of the page is a developer panel that provides some useful information while you're creating a scenario. This panel is only visible during scenario development."
+                    text: "At the bottom of the page is a developer panel that provides some useful information while you're creating a scenario. This panel is only visible during scenario development. I'll add more details about this later."
                 }
             ],
             options: [
