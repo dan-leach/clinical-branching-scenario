@@ -4,7 +4,7 @@ let scenario = {
     config: {
         development: {
             developerPanelVisible: true,
-            startNode: 0
+            startNode: 4
         },
         nodes: {
             //object of configuration options relating to nodes

@@ -23,6 +23,10 @@
     justify-content: center;
 }
 
+.log-options {
+    min-height: auto;
+}
+
 .contentCenter {
     text-align: center;
 }

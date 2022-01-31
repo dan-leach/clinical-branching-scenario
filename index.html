@@ -191,11 +191,7 @@
                 </div>
                 <div class="card-body">
                     <div v-for="element in scenario.log">
-                        <span v-if="element.log">
-                            <h5>{{nodes[element.node].title}} [{{element.node}}]: </h5>
-                            <span v-html="element.log"></span><br>
-                            <hr>
-                        </span>
+                        <span v-if="element.log" v-html="element.log"></span><br>
                     </div>
                 </div>
             </div>

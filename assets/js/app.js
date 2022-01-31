@@ -82,7 +82,6 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 log: app.fn.scenario.log.get() //generate the log with notes, feedback, user inputs and score
                             })
                             app.fn.scenario.updateScore() //update the overall score
-                            console.log(app.scenario)
                         },
                         arrive: function(){ //called after arriving at a node
                             scroll(0,0) //scroll to the top of the new node
@@ -482,9 +481,12 @@ var RootComponent = { //create the app instance, import scenario specific data f
                             return false
                         },
                         select: function(optionIndex = 0){ //called by @click event of an option button
-                            var option = app.nodes[app.node].options[optionIndex] //define the option object
+                            let node = app.nodes[app.node]
+                            var option = node.options[optionIndex] //define the option object
                             var goTo = (option.goTo) ? app.fn.nodes.findIndex(option.goTo) : app.node + 1 // if a goTo is specified find the index for that node, otherwise provide index for next node
                             console.log("Option '" + option.title + "' selected: goTo '" + app.nodes[goTo].id + "'")
+                            for (let optionIndex in node.options) node.options[optionIndex].latestSelection = false //remove any true pre-existing latestSelection properties
+                            option.latestSelection = true //set curretn option to be the latestSelection
                             option.selectCount++ //increment the counter for the number of times this option has been selected by the user
                             if (option.onceOnly) option.disabled = true //prevent option being selected further times if it has onceOnly property set true
                             app.fn.nodes.events.exit() //call the node exit event
@@ -494,6 +496,9 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 app.transitionActive = false
                                 app.fn.nodes.events.arrive() //call the node arrive event
                             }, 500)
+                        },
+                        getLog: function(option){
+                            return (option.latestSelection) ? "<strong>" + option.title + "</strong>" : "<span>" + option.title + "</span>"
                         },
                         tests: { //tests that can form part of a condition for a content or option object where test target is a option object
                             seen: function(option){ //returns true if object 'option' has been seen
@@ -519,6 +524,8 @@ var RootComponent = { //create the app instance, import scenario specific data f
                             for (var contentIndex in app.nodes[app.node].contents){ //loop through all the content objects
                                 var content = app.nodes[app.node].contents[contentIndex] //define the current content object
                                 if (content.excludeFromNotes) continue
+                                app.fn.conditions.check(content) //check the conditions for this content element
+                                if (!app.fn.conditions.allMet(content)) continue //skip this content element if it's conditions are not all met
                                 notes += app.fn.nodes.contents[content.type].getNotes(content) //call the getNotes method for this content object
                             }
                             return notes
@@ -526,13 +533,30 @@ var RootComponent = { //create the app instance, import scenario specific data f
                     },
                     log: {
                         get: function(){
-                            var log = ""
+                            let log = "<div class='card'><div class='card-header'>"
+                            log += "<h5><button type='button' data-bs-toggle='collapse' data-bs-target='#log-step-" + app.scenario.log.length + "' class='btn btn-outline-secondary'>+/-</button>"
+                            log += "&nbsp;" + app.nodes[app.node].title + " [" + app.node + "]:</h5></div>"
+                            log += "<div id='log-step-" + app.scenario.log.length + "' class='collapse show'><div class='card-body'>"
                             if (app.nodes[app.node].excludeFromLog) return log //return blank if entire node is excluded
                             for (var contentIndex in app.nodes[app.node].contents){ //loop through all the content objects
                                 var content = app.nodes[app.node].contents[contentIndex] //define the current content object
-                                if (content.excludeFromLog) continue
+                                if (content.excludeFromLog) continue //skip this content element if it's set to be excluded
+                                app.fn.conditions.check(content) //check the conditions for this content element
+                                if (!app.fn.conditions.allMet(content)) continue //skip this content element if it's conditions are not all met
                                 log += (app.fn.nodes.contents[content.type].getLog) ? app.fn.nodes.contents[content.type].getLog(content) : app.fn.nodes.contents[content.type].getNotes(content) //if this content object has a getLog method use that, otherwise default to the getNotes method
                             }
+                            log += "</div><div class='card-footer log-options'>"
+                            let firstOption = true
+                            for (let optionIndex in app.nodes[app.node].options){
+                                let option = app.nodes[app.node].options[optionIndex]
+                                if (option.excludeFromLog) continue
+                                app.fn.conditions.check(option)
+                                if (!app.fn.conditions.allMet(option)) continue
+                                if (!firstOption) log += "&nbsp;|&nbsp;"
+                                firstOption = false
+                                log += (app.fn.nodes.options.getLog) ? app.fn.nodes.options.getLog(option) : app.fn.nodes.options.getNotes(option) //if this option object has a getLog method use that, otherwise default to the getNotes method
+                            }
+                            log += "</div></div></div>"
                             return log
                         }
                     },
@@ -661,6 +685,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                     var option = node.options[optionIndex] //define the current option object
                     option.seen = false //create 'seen' property for each option object, start as false
                     option.selectCount = 0 //create 'selectCount' property for each option object, start as 0
+                    option.latestSelection = false //create 'latestSelection' property for each option object, start as 0
                     if (!option.class) option.class = {'btn-primary': true} //if property 'class' not defined for each option object, create property and set as 'btn-primary'
                     option.disabled = false //create 'disabled' property for each option object, set as false initially
                     option.visible = false //create 'visible' property for each option object
