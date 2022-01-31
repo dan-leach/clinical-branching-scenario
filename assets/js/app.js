@@ -71,16 +71,10 @@ var RootComponent = { //create the app instance, import scenario specific data f
                     },
                     events: { //methods called on node level event occurance
                         exit: function(){ //called before leaving a node
-                            if (app.nodes[app.node].addNotesEachVisit || app.nodes[app.node].visitCount === 1){ //only add to casenotes after first visit to node, unless node has addNotesEachVisit property
-                                app.scenario.notes.push({ //push an object into the log array 
-                                    node: app.node, //the index of the node we're leaving
-                                    notes: app.fn.scenario.notes.get(), //generate the casenotes for the node we're leaving - shown in the casenotes panel
-                                })
+                            if (app.nodes[app.node].addNotesEachVisit || app.nodes[app.node].visitCount === 1){ //only add to case notes after first visit to node, unless node has addNotesEachVisit property
+                                app.scenario.notes.push(app.fn.scenario.notes.get()) //get and push a notes object into the notes array
                             }
-                            app.scenario.log.push({ //push an object into the log array 
-                                node: app.node, //the index of the node we're leaving
-                                log: app.fn.scenario.log.get() //generate the log with notes, feedback, user inputs and score
-                            })
+                            app.scenario.log.push(app.fn.scenario.log.get()) //get and push a log object into the log array
                             app.fn.scenario.updateScore() //update the overall score
                         },
                         arrive: function(){ //called after arriving at a node
@@ -238,7 +232,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 }
                                 return responses
                             },
-                            getNotes: function(content){ //returns HTML template string representing the object 'content' contribution to the casenotes for this node
+                            getNotes: function(content){ //returns HTML template string representing the object 'content' contribution to the case notes for this node
                                 return "<p>" + app.fn.nodes.contents.inputTextarea.getResponses(content) + "</p>"
                             },
                             getLog: function(content){ //returns HTML template string representing the object 'content' contribution to the log for this node
@@ -340,7 +334,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 }
                                 return missed
                             },
-                            getNotes: function(content){ //returns HTML template string representing the object 'content' contribution to the casenotes for this node
+                            getNotes: function(content){ //returns HTML template string representing the object 'content' contribution to the case notes for this node
                                 return "<p>" + app.fn.nodes.contents.inputCheckbox.getResponses(content) + "</p>"
                             },
                             getLog: function(content){ //returns HTML template string representing the object 'content' contribution to the log for this node
@@ -425,7 +419,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 }
                                 return false
                             },
-                            getNotes: function(content){ //returns HTML template string representing the object 'content' contribution to the casenotes for this node
+                            getNotes: function(content){ //returns HTML template string representing the object 'content' contribution to the case notes for this node
                                 return "<p>" + app.fn.nodes.contents.inputRadio.getResponse(content) + "</p>"
                             },
                             getLog: function(content){ //returns HTML template string representing the object 'content' contribution to the log for this node
@@ -482,13 +476,18 @@ var RootComponent = { //create the app instance, import scenario specific data f
                         },
                         select: function(optionIndex = 0){ //called by @click event of an option button
                             let node = app.nodes[app.node]
-                            var option = node.options[optionIndex] //define the option object
-                            var goTo = (option.goTo) ? app.fn.nodes.findIndex(option.goTo) : app.node + 1 // if a goTo is specified find the index for that node, otherwise provide index for next node
-                            console.log("Option '" + option.title + "' selected: goTo '" + app.nodes[goTo].id + "'")
-                            for (let optionIndex in node.options) node.options[optionIndex].latestSelection = false //remove any true pre-existing latestSelection properties
-                            option.latestSelection = true //set curretn option to be the latestSelection
-                            option.selectCount++ //increment the counter for the number of times this option has been selected by the user
-                            if (option.onceOnly) option.disabled = true //prevent option being selected further times if it has onceOnly property set true
+                            if (optionIndex != 99) { //developer 'Skip to next node' button uses optionIndex 99
+                                var option = node.options[optionIndex] //define the option object
+                                var goTo = (option.goTo) ? app.fn.nodes.findIndex(option.goTo) : app.node + 1 // if a goTo is specified find the index for that node, otherwise provide index for next node
+                                console.log("Option '" + option.title + "' selected: goTo '" + app.nodes[goTo].id + "'")
+                                for (let optionIndex in node.options) node.options[optionIndex].latestSelection = false //remove any true pre-existing latestSelection properties
+                                option.latestSelection = true //set curretn option to be the latestSelection
+                                option.selectCount++ //increment the counter for the number of times this option has been selected by the user
+                                if (option.onceOnly) option.disabled = true //prevent option being selected further times if it has onceOnly property set true
+                            } else { //developer skip to next node
+                                goTo = app.node + 1
+                                console.log("Skipping to: '" + app.nodes[goTo].id + "'")
+                            }
                             app.fn.nodes.events.exit() //call the node exit event
                             app.transitionActive = true
                             setTimeout(function() { // to allow time for node we're leaving to fadeout
@@ -519,44 +518,59 @@ var RootComponent = { //create the app instance, import scenario specific data f
                 scenario: {
                     notes: {
                         get: function(){ //returns a string with the notes from each content object of the current node
-                            var notes = ""
-                            if (app.nodes[app.node].excludeFromNotes) return notes //return blank if entire node is excluded
-                            for (var contentIndex in app.nodes[app.node].contents){ //loop through all the content objects
-                                var content = app.nodes[app.node].contents[contentIndex] //define the current content object
+                            let node = app.nodes[app.node] //define the current node
+                            let notes = {
+                                node: app.node,
+                                title: node.title,
+                                step: app.scenario.log.length,
+                                contents: "",
+                                option: ""
+                            }
+                            if (node.excludeFromNotes) return notes //return blank if entire node is excluded
+                            for (var contentIndex in node.contents){ //loop through all the content objects
+                                var content = node.contents[contentIndex] //define the current content object
                                 if (content.excludeFromNotes) continue
                                 app.fn.conditions.check(content) //check the conditions for this content element
                                 if (!app.fn.conditions.allMet(content)) continue //skip this content element if it's conditions are not all met
-                                notes += app.fn.nodes.contents[content.type].getNotes(content) //call the getNotes method for this content object
+                                notes.contents += app.fn.nodes.contents[content.type].getNotes(content) //call the getNotes method for this content object
                             }
+                            for (let optionIndex in node.options){ //loop through all the option objects
+                                let option = node.options[optionIndex] //define the current option object
+                                if (option.excludeFromNotes) continue //skip this option if it's set to be excluded
+                                app.fn.conditions.check(option) //check the conditions for this option
+                                if (!option.latestSelection) continue //skip this option if it's not the latest selected
+                                notes.option += option.title //use the title of the latestSelection option
+                            }
+                            console.log(notes)
                             return notes
                         }
                     },
                     log: {
                         get: function(){
-                            let log = "<div class='card'><div class='card-header'>"
-                            log += "<h5><button type='button' data-bs-toggle='collapse' data-bs-target='#log-step-" + app.scenario.log.length + "' class='btn btn-outline-secondary'>+/-</button>"
-                            log += "&nbsp;" + app.nodes[app.node].title + " [" + app.node + "]:</h5></div>"
-                            log += "<div id='log-step-" + app.scenario.log.length + "' class='collapse show'><div class='card-body'>"
-                            if (app.nodes[app.node].excludeFromLog) return log //return blank if entire node is excluded
-                            for (var contentIndex in app.nodes[app.node].contents){ //loop through all the content objects
-                                var content = app.nodes[app.node].contents[contentIndex] //define the current content object
+                            let node = app.nodes[app.node] //define the current node
+                            let log = { //create the log object
+                                title: node.title,
+                                node: app.node,
+                                step: app.scenario.log.length,
+                                contents: "",
+                                options: ""
+                            }
+                            if (node.excludeFromLog) return false //return blank if entire node is excluded
+                            for (var contentIndex in node.contents){ //loop through all the content objects
+                                var content = node.contents[contentIndex] //define the current content object
                                 if (content.excludeFromLog) continue //skip this content element if it's set to be excluded
                                 app.fn.conditions.check(content) //check the conditions for this content element
                                 if (!app.fn.conditions.allMet(content)) continue //skip this content element if it's conditions are not all met
-                                log += (app.fn.nodes.contents[content.type].getLog) ? app.fn.nodes.contents[content.type].getLog(content) : app.fn.nodes.contents[content.type].getNotes(content) //if this content object has a getLog method use that, otherwise default to the getNotes method
+                                log.contents += (app.fn.nodes.contents[content.type].getLog) ? app.fn.nodes.contents[content.type].getLog(content) : app.fn.nodes.contents[content.type].getNotes(content) //if this content object has a getLog method use that, otherwise default to the getNotes method
                             }
-                            log += "</div><div class='card-footer log-options'>"
-                            let firstOption = true
-                            for (let optionIndex in app.nodes[app.node].options){
-                                let option = app.nodes[app.node].options[optionIndex]
-                                if (option.excludeFromLog) continue
-                                app.fn.conditions.check(option)
-                                if (!app.fn.conditions.allMet(option)) continue
-                                if (!firstOption) log += "&nbsp;|&nbsp;"
-                                firstOption = false
-                                log += (app.fn.nodes.options.getLog) ? app.fn.nodes.options.getLog(option) : app.fn.nodes.options.getNotes(option) //if this option object has a getLog method use that, otherwise default to the getNotes method
+                            for (let optionIndex in node.options){ //loop through all the option objects
+                                let option = node.options[optionIndex] //define the current option object
+                                if (option.excludeFromLog) continue //skip this option if it's set to be excluded
+                                app.fn.conditions.check(option) //check the conditions for this option
+                                if (!app.fn.conditions.allMet(option)) continue //skip this option if it's conditions are not met
+                                if (log.options.length) log.options += "&nbsp;|&nbsp;" //add a divider between options - avoiding placing divider before the first item
+                                log.options += (app.fn.nodes.options.getLog) ? app.fn.nodes.options.getLog(option) : app.fn.nodes.options.getNotes(option) //if this option object has a getLog method use that, otherwise default to the getNotes method
                             }
-                            log += "</div></div></div>"
                             return log
                         }
                     },

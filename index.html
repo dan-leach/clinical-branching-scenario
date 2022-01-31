@@ -165,10 +165,21 @@
                     </div>
                     <div class="card-body card-content scroll">
                         <div v-for="element in scenario.notes.slice().reverse()">
-                            <div v-if="element.notes">
-                                <strong>{{nodes[element.node].title}}: </strong>
-                                <span v-html="element.notes"></span>
-                                <hr>
+                            <div v-if="element.contents">
+
+                                <div class='card'>
+                                    <div class='card-header'>
+                                        <h5>
+                                            <button type='button' data-bs-toggle='collapse' :data-bs-target="'#notes-step-'+element.step" class='btn btn-outline-secondary'>+/-</button>
+                                            &nbsp;{{element.title}}:
+                                        </h5>
+                                    </div>
+                                    <div :id="'notes-step-'+element.step" class='collapse show'>
+                                        <div class='card-body' v-html="element.contents"></div>
+                                        <div class='card-footer log-options'>You selected:&nbsp;<strong>{{element.option}}</strong></div>
+                                    </div>
+                                </div>
+                                <br>
                             </div>
                         </div>
                     </div>
@@ -183,7 +194,7 @@
         <div v-if="config.development.developerPanelVisible">
             <hr>
             <h3>Developer Panel</h3>
-            Current score: <span class="badge bg-secondary">{{scenario.score.achieved}} / {{scenario.score.possible}}</span> Current node: <span class="badge bg-secondary">{{node}}</span> <button @click=node++ class="btn btn-sm m-2 btn-warning" >Go to next node</button> <button @click=testFn class="btn btn-sm m-2 btn-warning" >testFn</button><br>
+            Current score: <span class="badge bg-secondary">{{scenario.score.achieved}} / {{scenario.score.possible}}</span> Current node: <span class="badge bg-secondary">{{node}}</span> <button @click=fn.nodes.options.select(99) class="btn btn-sm m-2 btn-warning" >Skip to next node</button><br>
             <br>
             <div class="card">
                 <div class="card-header">
@@ -191,7 +202,19 @@
                 </div>
                 <div class="card-body">
                     <div v-for="element in scenario.log">
-                        <span v-if="element.log" v-html="element.log"></span><br>
+                        <div class='card'>
+                            <div class='card-header'>
+                                <h5>
+                                    <button type='button' data-bs-toggle='collapse' :data-bs-target="'#log-step-'+element.step" class='btn btn-outline-secondary'>+/-</button>
+                                    &nbsp;{{element.title}} [{{element.node}}]:
+                                </h5>
+                            </div>
+                            <div :id="'log-step-'+element.step" class='collapse show'>
+                                <div class='card-body' v-html="element.contents"></div>
+                                <div class='card-footer log-options' v-html="element.options"></div>
+                            </div>
+                            <br>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -4,7 +4,7 @@ let scenario = {
     config: {
         development: {
             developerPanelVisible: true,
-            startNode: 4
+            startNode: 0
         },
         nodes: {
             //object of configuration options relating to nodes
@@ -1006,29 +1006,29 @@ let scenario = {
             ]
         },
         {
-            id: "about-the-casenotes-panel",
-            title: "About the casenotes panel",
+            id: "about-the-case-notes-panel",
+            title: "About the case-notes panel",
             contents: [
                 {
                     id: "text-main",
                     type: "p",
-                    text: "After you move on from a node, useful information can be recorded in the casenotes panel on the right. This allows users to refer back to information they found out earlier in the scenario."
+                    text: "After you move on from a node, useful information can be recorded in the case notes panel on the right. This allows users to refer back to information they found out earlier in the scenario."
                 },
                 {
                     id: "text-exclude-from-log",
                     type: "p",
-                    text: "You can exclude either entire nodes, or certain content elements from the casenotes, to prevent them from getting too crowded."
+                    text: "You can exclude either entire nodes, or certain content elements from the case notes, to prevent them from getting too crowded."
                 },
                 {
                     id: "text-exclude-from-log-demo",
                     type: "p",
-                    text: "For example, when you move on from this node, this paragraph of text will not appear in the casenotes as it is set to be excluded.",
+                    text: "For example, when you move on from this node, this paragraph of text will not appear in the case notes as it is set to be excluded.",
                     excludeFromNotes: true
                 },
                 {
                     id: "text-img-in-case-notes",
                     type: "p",
-                    text: "Certain content will appear differently in the casenotes panel compared to the main content panel. For example, images from the main area are entered into the casenotes panel with a text description and a link to open the image."
+                    text: "Certain content will appear differently in the case notes panel compared to the main content panel. For example, images from the main area are entered into the case notes panel with a text description and a link to open the image."
                 }
             ],
             options: [
@@ -1060,7 +1060,7 @@ let scenario = {
                     id: "back",
                     title: "Back",
                     class: "btn-danger",
-                    goTo: "about-the-casenotes-panel"
+                    goTo: "about-the-case-notes-panel"
                 },
                 {
                     id: "next",
