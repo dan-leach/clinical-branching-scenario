@@ -12,8 +12,8 @@ let scenario = {
             contents: {
                 //object of configuration options relating to contents of nodes
                 //required
-                inputTextarea: {
-                    //object of configuration options relating to inputTextarea content objects
+                input_textarea: {
+                    //object of configuration options relating to input_textarea content objects
                     //required
                     minLength: 10,
                         //integer defines minimum length in characters of user entry
@@ -22,7 +22,7 @@ let scenario = {
                         //integer defines score for finding keyword if not defined in keyword object
                         //required
                 },
-                inputCheckbox: {
+                input_checkboxes: {
                     defaultScore: {
                         recommended: 0,
                         //integer defines score for selected recommended checkbox if not defined in checkbox object
@@ -32,13 +32,13 @@ let scenario = {
                         //required
                     }
                 },
-                inputRadio: {
+                input_radios: {
                     defaultScore: {
                         recommended: 0,
                         //integer defines score for selected recommended radio if not defined in radio object
                         //required
                         notRecommended: 0
-                        //integer defines score for selected not recommended radio if not defined in radio object
+                        //integer defines score for selected not recommended radio if not defined in radios object
                         //required
                     }
                 }
@@ -52,23 +52,31 @@ let scenario = {
             excludeFromNotes: true,
             contents: [
                 {
-                    id: "p_img-1",
-                    type: "p_img",
-                    text: "Welcome to this branching scenario. This version will demonstrate the capabilities of the application and provide an introduction to what is required to create a scenario.",
-                    imgWidth: "7",
-                    img: {
-                        path: "doctor_laptop.jpg",
-                        text: "A doctor using a laptop"
-                    }
+                    id: "layout_columns-1",
+                    type: "layout_columns",
+                    columns: [
+                        {
+                            id: "text_paragraph-1",
+                            type: "text_paragraph",
+                            text: "Welcome to this branching scenario. This version will demonstrate the capabilities of the application and provide an introduction to what is required to create a scenario."
+                        },
+                        {
+                            id: "media_image-1",
+                            type: "media_image",
+                            path: "doctor_laptop.jpg",
+                            text: "A doctor using a laptop",
+                            colWidth: "7"
+                        }
+                    ]
                 },
                 {
-                    id: "spacer-1",
-                    type: "spacer",
+                    id: "layout_spacer-1",
+                    type: "layout_spacer",
                     size: 5
                 },
                 {
-                    id: "emp-1",
-                    type: "emp",
+                    id: "text_emphasis-1",
+                    type: "text_emphasis",
                     text: "Click 'Next' to continue..."
                 }
             ],
@@ -84,28 +92,36 @@ let scenario = {
             title: "Scenario Structure",
             contents: [
                 {
-                    id: "p-1",
-                    type: "p",
+                    id: "text_paragraph-1",
+                    type: "text_paragraph",
                     text: "An immersive and compelling scenario will provide the user with information and choices. The choices they make will change how the scenario progresses. To build this scenario we need to break up the scenario into parts.",
                     excludeFromNotes: true
                 },
                 {
-                    id: "emp-1",
-                    type: "emp",
+                    id: "text_emphasis-1",
+                    type: "text_emphasis",
                     text: "We'll refer to each part of a scenario as a node."
                 },
                 {
-                    id: "p_img-1",
-                    type: "p_img",
-                    text: "This diagram represents the node-based structure of a scenario. In this example, progression through the first couple of nodes is linear, but later choices the user makes will taken them on very different paths through the scenario. Sometimes this might mean revisiting certain nodes, or reaching a different scenario ending, depending on their decision making.",
-                    imgWidth: "8",
-                    img: {
-                        path: "scenario_structure.jpeg",
-                        text: "Diagram of the node-based structure of a scenario",
-                        caption: {
-                            text: "Diagram of the node-based structure of a scenario"
+                    id: "layout_columns-1",
+                    type: "layout_columns",
+                    columns: [
+                        {
+                            id: "text_paragraph-1",
+                            type: "text_paragraph",
+                            text: "This diagram represents the node-based structure of a scenario. In this example, progression through the first couple of nodes is linear, but later choices the user makes will taken them on very different paths through the scenario. Sometimes this might mean revisiting certain nodes, or reaching a different scenario ending, depending on their decision making."
+                        },
+                        {
+                            id: "media_image-1",
+                            type: "media_image",
+                            path: "scenario_structure.jpeg",
+                            text: "Diagram of the node-based structure of a scenario",
+                            caption: {
+                                text: "Diagram of the node-based structure of a scenario"
+                            },
+                            colWidth: "8"
                         }
-                    }
+                    ]
                 }
             ],
             options: [
@@ -126,25 +142,25 @@ let scenario = {
             title: "Node Structure",
             contents: [
                 {
-                    id: "p-1",
-                    type: "p",
+                    id: "text_paragraph-1",
+                    type: "text_paragraph",
                     text: "We've established that a scenario is made up of nodes, and a user progresses through that scenario by moving from node to node. But what is a node?",
                     excludeFromNotes: true
                 },
                 {
-                    id: "p-2",
-                    type: "p",
+                    id: "text_paragraph-2",
+                    type: "text_paragraph",
                     text: "A node is a step along the pathway that makes up a scenario. Each time an option button at the bottom is clicked, the user moves from one node to another.",
                     excludeFromNotes: true
                 },
                 {
-                    id: "emp-1",
-                    type: "emp",
+                    id: "text_emphasis-1",
+                    type: "text_emphasis",
                     text: "A node is principally made up of contents and options."
                 },
                 {
-                    id: "img-1",
-                    type: "img",
+                    id: "media_image-1",
+                    type: "media_image",
                     path: "node_structure.jpeg",
                     text: "Diagram of the structure of a node",
                     caption: {
@@ -153,8 +169,8 @@ let scenario = {
                 },
                 
                 {
-                    id: "p-3",
-                    type: "p",
+                    id: "text_paragraph-3",
+                    type: "text_paragraph",
                     text: "A node also has some other properties, such as a title. The node you're viewing right now has the title 'Node Structure' which appears in the header of the main panel.",
                     excludeFromNotes: true
                 }
@@ -177,14 +193,14 @@ let scenario = {
             title: "Node Contents",
             contents: [
                 {
-                    id: "p-1",
-                    type: "p",
+                    id: "text_paragraph-1",
+                    type: "text_paragraph",
                     text: "Each content element appears in the body of the main panel. For example, this paragraph is a content element of the current node.",
                     excludeFromNotes: true
                 },
                 {
-                    id: "ul-1",
-                    type: "ul",
+                    id: "text_bullets-1",
+                    type: "text_bullets",
                     text: "There are various differnt types of content elements that we can use:",
                     items: [
                         "Paragraph text",
@@ -196,20 +212,20 @@ let scenario = {
                     ]
                 },
                 {
-                    id: "emp-1",
-                    type: "emp",
+                    id: "text_emphasis-1",
+                    type: "text_emphasis",
                     text: "Look out for examples of different types of content elements as you progress through this demonstration.",
                     excludeFromNotes: true
                 },
                 {
-                    id: "p-2",
-                    type: "p",
+                    id: "text_paragraph-2",
+                    type: "text_paragraph",
                     text: "Content elements have various properties depending on their type which determine their appearance and behaviour. For example, a heading element has the property 'level' which can have a value of 1, 2 or 3 to change the size of the heading.",
                     excludeFromNotes: true
                 },
                 {
-                    id: "p-3",
-                    type: "p",
+                    id: "text_paragraph-3",
+                    type: "text_paragraph",
                     text: "It's likely that more types of content elements will need to be created as development progresses.",
                     excludeFromNotes: true
                 }
@@ -233,22 +249,30 @@ let scenario = {
             excludeFromNotes: true,
             contents: [
                 {
-                    id: "p-1",
-                    type: "p",
+                    id: "text_paragraph-1",
+                    type: "text_paragraph",
                     text: "Each option appears in the footer of the main panel. When the user selects an option it takes them to a particular node. All the options that you've seen so far have been either 'Next' or 'Back'."
                 },
                 {
-                    id: "p_img-1",
-                    type: "p_img",
-                    text: "We'll now demonstrate how you can change the way a user progresses through the scenario with the use of options. This diagram show how the options below can take you through a pathway of nodes in different ways.",
-                    imgWidth: 8,
-                    img: {
-                        path: "example_options_start.jpeg",
-                        text: "Options demonstration diagram",
-                        caption: {
-                            text: "Options demonstration diagram"
+                    id: "layout_columns-1",
+                    type: "layout_columns",
+                    columns: [
+                        {
+                            id: "text_paragraph-1",
+                            type: "text_paragraph",
+                            text: "We'll now demonstrate how you can change the way a user progresses through the scenario with the use of options. This diagram show how the options below can take you through a pathway of nodes in different ways."
+                        },
+                        {
+                            id: "media_image-1",
+                            type: "media_image",
+                            path: "example_options_start.jpeg",
+                            text: "Options demonstration diagram",
+                            caption: {
+                                text: "Options demonstration diagram"
+                            },
+                            colWidth: 8
                         }
-                    }
+                    ]
                 }
             ],
             options: [
@@ -281,8 +305,8 @@ let scenario = {
             excludeFromNotes: true,
             contents: [
                 {
-                    id: "img-1",
-                    type: "img",
+                    id: "media_image-1",
+                    type: "media_image",
                     path: "example_options_1.jpeg",
                     text: "Options demonstration diagram"
                 }
@@ -301,8 +325,8 @@ let scenario = {
             excludeFromNotes: true,
             contents: [
                 {
-                    id: "img-1",
-                    type: "img",
+                    id: "media_image-1",
+                    type: "media_image",
                     path: "example_options_2.jpeg",
                     text: "Options demonstration diagram"
                 }
@@ -321,8 +345,8 @@ let scenario = {
             excludeFromNotes: true,
             contents: [
                 {
-                    id: "img-1",
-                    type: "img",
+                    id: "media_image-1",
+                    type: "media_image",
                     path: "example_options_3.jpeg",
                     text: "Options demonstration diagram"
                 }
@@ -341,26 +365,34 @@ let scenario = {
             excludeFromNotes: true,
             contents: [
                 {
-                    id: "p_img-1",
-                    type: "p_img",
-                    text: "Hopefully you can see how your decisions can change the way you progress through this scenario. This is clearly a very simple pathway, but it could be much more complex if required to reflect the complexity of real-world clinical decision making.",
-                    imgWidth: 8,
-                    img: {
-                        path: "example_options_end.jpeg",
-                        text: "Options demonstration diagram",
-                        caption: {
-                            text: "Options demonstration diagram"
+                    id: "layout_columns-1",
+                    type: "layout_columns",
+                    columns: [
+                        {
+                            id: "text_paragraph-1",
+                            type: "text_paragraph",
+                            text: "Hopefully you can see how your decisions can change the way you progress through this scenario. This is clearly a very simple pathway, but it could be much more complex if required to reflect the complexity of real-world clinical decision making.",
+                        },
+                        {
+                            id: "media-image-1",
+                            type: "media_image",
+                            path: "example_options_end.jpeg",
+                            text: "Options demonstration diagram",
+                            caption: {
+                                text: "Options demonstration diagram"
+                            },
+                            colWidth: 8
                         }
-                    }
+                    ]
                 },
                 {
-                    id: "emp-1",
-                    type: "emp",
+                    id: "text_emphasis-1",
+                    type: "text_emphasis",
                     text: "You can click 'Back' to restart the Example Options Path and try a different route."
                 },
                 {
-                    id: "p-1",
-                    type: "p",
+                    id: "text_paragraph-1",
+                    type: "text_paragraph",
                     text: "Once you're finished with this Example Options Path, click 'Next' to move on."
                 }
             ],
@@ -383,35 +415,51 @@ let scenario = {
             excludeFromNotes: true,
             contents: [
                 {
-                    id: "emp-1",
-                    type: "emp",
+                    id: "text_emphasis-1",
+                    type: "text_emphasis",
                     text: "Let's briefly review what we've covered so far."
                 },
                 {
-                    id: "p_img-1",
-                    type: "p_img",
-                    text: "A scenario is made up of nodes. The nodes are linked together to create a pathway which determines how the scenario progresses.",
-                    imgWidth: "8",
-                    img: {
-                        path: "scenario_structure.jpeg",
-                        text: "Diagram of the node-based structure of a scenario",
-                        caption: {
-                            text: "Diagram of the node-based structure of a scenario"
+                    id: "layout_columns-1",
+                    type: "layout_columns",
+                    columns: [
+                        {
+                            id: "text_paragraph-1",
+                            type: "text_paragraph",
+                            text: "A scenario is made up of nodes. The nodes are linked together to create a pathway which determines how the scenario progresses."
+                        },
+                        {
+                            id: "media_image-1",
+                            type: "media_image",
+                            path: "scenario_structure.jpeg",
+                            text: "Diagram of the node-based structure of a scenario",
+                            caption: {
+                                text: "Diagram of the node-based structure of a scenario"
+                            },
+                            colWidth: "8"
                         }
-                    }
+                    ]
                 },
                 {
-                    id: "p_img-2",
-                    type: "p_img",
-                    text: "Each node is made up of contents and options. The contents are what will be displayed to the user. The user chooses between the options which will determine which node they arrive at next.",
-                    imgWidth: 8,
-                    img: {
-                        path: "node_structure.jpeg",
-                        text: "Diagram of the structure of a node",
-                        caption: {
-                            text: "Diagram of the structure of a node"
+                    id: "layout_columns-2",
+                    type: "layout_columns",
+                    columns: [
+                        {
+                            id: "text_paragraph-1",
+                            type: "text_paragraph",
+                            text: "Each node is made up of contents and options. The contents are what will be displayed to the user. The user chooses between the options which will determine which node they arrive at next."
+                        },
+                        {
+                            id: "media_image-1",
+                            type: "media_image",
+                            path: "node_structure.jpeg",
+                            text: "Diagram of the structure of a node",
+                            caption: {
+                                text: "Diagram of the structure of a node"
+                            },
+                            colWidth: 8
                         }
-                    }
+                    ]
                 }
             ],
             options: [
@@ -432,24 +480,24 @@ let scenario = {
             title: "Conditions",
             contents: [
                 {
-                    id: "p-1",
-                    type: "p",
+                    id: "text_paragraph-1",
+                    type: "text_paragraph",
                     text: "Sometimes we might want to show certain content elements or options in certain conditions. For example, you might want to provide certain clinical findings or a particular option to a user who made a specific decision earlier on in the scenario."
                 },
                 {
-                    id: "emp-1",
-                    type: "emp",
+                    id: "text_emphasis-1",
+                    type: "text_emphasis",
                     text: "Adding conditions to a content element or option will hide it unless/until that condition is met."
                 },
                 {
-                    id: "p-2",
-                    type: "p",
+                    id: "text_paragraph-2",
+                    type: "text_paragraph",
                     text: "For example, some text will appear below depending on what path or paths you took through the Example Options Path earlier.",
                     excludeFromNotes: true
                 },
                 {
-                    id: "emp-2",
-                    type: "emp",
+                    id: "text_emphasis-2",
+                    type: "text_emphasis",
                     excludeFromNotes: true,
                     text: "You took a path through option 1.",
                     conditions: [
@@ -467,8 +515,8 @@ let scenario = {
                     ]
                 },
                 {
-                    id: "emp-3",
-                    type: "emp",
+                    id: "text_emphasis-3",
+                    type: "text_emphasis",
                     excludeFromNotes: true,
                     text: "You took a path through option 2.",
                     conditions: [
@@ -486,8 +534,8 @@ let scenario = {
                     ]
                 },
                 {
-                    id: "emp-4",
-                    type: "emp",
+                    id: "text_emphasis-4",
+                    type: "text_emphasis",
                     excludeFromNotes: true,
                     text: "You took a path through option 3.",
                     conditions: [
@@ -523,22 +571,30 @@ let scenario = {
             title: "Interactive elements (Part 1)",
             contents: [
                 {
-                    id: "p_img-1",
-                    type: "p_img",
+                    id: "layout_columns-1",
+                    type: "layout_columns",
                     excludeFromNotes: true,
-                    text: "Earlier, we mentioned different types of contents. In addition to the static types such as text or images, we can create interactive elements. This can be a useful way to encourage user engagement, but when combined with conditions can be a particularly powerful way to make a scenario respond to a users decisions.",
-                    imgWidth: 8,
-                    img: {
-                        path: "interactive_element_example_not_met.jpeg",
-                        text: "Example interactive element diagram with keywords and conditions",
-                        caption: {
-                            text: "Example interactive element diagram with keywords and conditions"
+                    columns: [
+                        {
+                            id: "text_paragraph-1",
+                            type: "text_paragraph",
+                            text: "Earlier, we mentioned different types of contents. In addition to the static types such as text or images, we can create interactive elements. This can be a useful way to encourage user engagement, but when combined with conditions can be a particularly powerful way to make a scenario respond to a users decisions."
                         },
-                    },
+                        {
+                            id: "media_image-1",
+                            type: "media_image",
+                            path: "interactive_element_example_not_met.jpeg",
+                            text: "Example interactive element diagram with keywords and conditions",
+                            caption: {
+                                text: "Example interactive element diagram with keywords and conditions"
+                            },
+                            colWidth: 8
+                        }
+                    ],
                     conditions: [
                         {
                             target: {
-                                id: "inputTextarea-1"
+                                id: "input_textarea-1"
                             },
                             test: {
                                 methodName: "keywordFoundCount",
@@ -549,21 +605,29 @@ let scenario = {
                     ]
                 },
                 {
-                    id: "p_img-2",
-                    type: "p_img",
-                    text: "Earlier, we mentioned different types of contents. In addition to the static types such as text or images, we can create interactive elements. This can be a useful way to encourage user engagement, but when combined with conditions can be a particularly powerful way to make a scenario respond to a users decisions.",
-                    imgWidth: 8,
-                    img: {
-                        path: "interactive_element_example_met.jpeg",
-                        text: "Example interactive element diagram with keywords and conditions",
-                        caption: {
-                            text: "Example interactive element diagram with keywords and conditions"
+                    id: "layout_columns-2",
+                    type: "layout_columns",
+                    columns: [
+                        {
+                            id: "text_paragraph-2",
+                            type: "text_paragraph",
+                            text: "Earlier, we mentioned different types of contents. In addition to the static types such as text or images, we can create interactive elements. This can be a useful way to encourage user engagement, but when combined with conditions can be a particularly powerful way to make a scenario respond to a users decisions."
                         },
-                    },
+                        {
+                            id: "media_image-1",
+                            type: "media_image",
+                            path: "interactive_element_example_met.jpeg",
+                            text: "Example interactive element diagram with keywords and conditions",
+                            caption: {
+                                text: "Example interactive element diagram with keywords and conditions"
+                            },
+                            colWidth: 8
+                        }
+                    ],
                     conditions: [
                         {
                             target: {
-                                id: "inputTextarea-1"
+                                id: "input_textarea-1"
                             },
                             test: {
                                 methodName: "keywordFoundCount",
@@ -574,8 +638,8 @@ let scenario = {
                     ]
                 },
                 {
-                    id: "inputTextarea-1",
-                    type: "inputTextarea",
+                    id: "input_textarea-1",
+                    type: "input_textarea",
                     excludeFromNotes: true,
                     text: "Example: Please enter the names of as many of the planets of our solar system as you can:",
                     keywords: [
@@ -636,14 +700,14 @@ let scenario = {
                     ]
                 },
                 {
-                    id: "p-1",
-                    type: "p",
+                    id: "text_paragraph-1",
+                    type: "text_paragraph",
                     excludeFromNotes: true,
                     text: "This is an example of a textarea input, which is a type of content element. We can define keywords which will generate certain responses. This is a good way of making users thing about what information they need, or what actions they'd like to take. This way, the user only finds out information they've asked for and can only choose options they've thought of which is more like real clinical decision making."
                 },
                 {
-                    id: "emp-1",
-                    type: "emp",
+                    id: "text_emphasis-1",
+                    type: "text_emphasis",
                     excludeFromNotes: true,
                     text: "The 'Next' button won't appear until you've identified at least 3 planets!"
                 }
@@ -661,7 +725,7 @@ let scenario = {
                     conditions: [
                         {
                             target: {
-                                id: "inputTextarea-1"
+                                id: "input_textarea-1"
                             },
                             test: {
                                 methodName: "keywordFoundCount",
@@ -679,13 +743,13 @@ let scenario = {
             excludeFromNotes: true,
             contents: [
                 {
-                    id: "p-1",
-                    type: "p",
+                    id: "text_paragraph-1",
+                    type: "text_paragraph",
                     text: "The previous node showed you a textarea input. The 'Next' button had a condition which meant it only appeared once you'd named 3 or more planets. You can also make options appear depending on which specific keywords are identified."
                 },
                 {
-                    id: "inputTextarea-1",
-                    type: "inputTextarea",
+                    id: "input_textarea-1",
+                    type: "input_textarea",
                     text: "Example: Please enter which antibiotic you'd like to give for line-related sepsis:",
                     keywords: [
                         {
@@ -739,7 +803,7 @@ let scenario = {
                     conditions: [
                         {
                             target: {
-                                id: "inputTextarea-1"
+                                id: "input_textarea-1"
                             },
                             test: {
                                 methodName: "keywordIsFound",
@@ -754,7 +818,7 @@ let scenario = {
                     conditions: [
                         {
                             target: {
-                                id: "inputTextarea-1"
+                                id: "input_textarea-1"
                             },
                             test: {
                                 methodName: "keywordIsFound",
@@ -769,7 +833,7 @@ let scenario = {
                     conditions: [
                         {
                             target: {
-                                id: "inputTextarea-1"
+                                id: "input_textarea-1"
                             },
                             test: {
                                 methodName: "keywordIsFound",
@@ -784,7 +848,7 @@ let scenario = {
                     conditions: [
                         {
                             target: {
-                                id: "inputTextarea-1"
+                                id: "input_textarea-1"
                             },
                             test: {
                                 methodName: "keywordIsFound",
@@ -799,7 +863,7 @@ let scenario = {
                     conditions: [
                         {
                             target: {
-                                id: "inputTextarea-1"
+                                id: "input_textarea-1"
                             },
                             test: {
                                 methodName: "keywordIsFound",
@@ -814,7 +878,7 @@ let scenario = {
                     conditions: [
                         {
                             target: {
-                                id: "inputTextarea-1"
+                                id: "input_textarea-1"
                             },
                             test: {
                                 methodName: "keywordIsFound",
@@ -829,7 +893,7 @@ let scenario = {
                     conditions: [
                         {
                             target: {
-                                id: "inputTextarea-1"
+                                id: "input_textarea-1"
                             },
                             test: {
                                 methodName: "keywordIsFound",
@@ -845,13 +909,13 @@ let scenario = {
             title: "Interactive elements (Part 3)",
             contents: [
                 {
-                    id: "p-1",
-                    type: "p",
+                    id: "text_paragraph-1",
+                    type: "text_paragraph",
                     text: "You've now seen how a textarea input can be used to provide the user with new information or enable options, depending on the user's entry. Other input types include checkboxes and radio buttons."
                 },
                 {
-                    id: "inputCheckbox-1",
-                    type: "inputCheckbox",
+                    id: "input_checkboxes-1",
+                    type: "input_checkboxes",
                     excludeFromNotes: true,
                     text: "Please select one or more options:",
                     checkboxes: [
@@ -873,8 +937,8 @@ let scenario = {
                     ]
                 },
                 {
-                    id: "inputRadio-1",
-                    type: "inputRadio",
+                    id: "input_radios-1",
+                    type: "input_radios",
                     excludeFromNotes: true,
                     text: "Please select an option:",
                     radios: [
@@ -909,7 +973,7 @@ let scenario = {
                     conditions: [
                         {
                             target: {
-                                id: "inputCheckbox-1"
+                                id: "input_checkboxes-1"
                             },
                             test: {
                                 methodName: "checkedCount",
@@ -919,7 +983,7 @@ let scenario = {
                         },
                         {
                             target: {
-                                id: "inputRadio-1"
+                                id: "input_radios-1"
                             },
                             test: {
                                 methodName: "selectedCount",
@@ -936,31 +1000,31 @@ let scenario = {
             title: "Review",
             contents: [
                 {
-                    id: "emp-1",
-                    type: "emp",
+                    id: "text_emphasis-1",
+                    type: "text_emphasis",
                     text: "Let's briefly review what we've covered so far.",
                     excludeFromNotes: true
                 },
                 {
-                    id: "p-1",
-                    type: "p",
+                    id: "text_paragraph-1",
+                    type: "text_paragraph",
                     text: "A scenario is made up of nodes. The nodes are linked together to create a pathway which determines how the scenario progresses.",
                     excludeFromNotes: true
                 },
                 {
-                    id: "p-2",
-                    type: "p",
+                    id: "text_paragraph-2",
+                    type: "text_paragraph",
                     text: "Each node is made up of contents and options. The contents are what will be displayed to the user. The user chooses between the options which will determine which node they arrive at next.",
                     excludeFromNotes: true
                 },
                 {
-                    id: "p-3",
-                    type: "p",
+                    id: "text_paragraph-3",
+                    type: "text_paragraph",
                     text: "You can engage the user with interactive content elements, such as textarea, checkbox and radio button inputs."
                 },
                 {
-                    id: "ul-1",
-                    type: "ul",
+                    id: "text_bullets-1",
+                    type: "text_bullets",
                     text: "You can use conditions to show or hide content elements or options. Examples of conditions include:",
                     items: [
                         "If a particular node has been visited, or how many times",
@@ -974,21 +1038,29 @@ let scenario = {
                     ]
                 },
                 {
-                    id: "p_img-1",
-                    type: "p_img",
-                    text: "This diagram structure of a node. In this version you can see how content elements or options can be visible or hidden depending on if their conditions are met.",
-                    imgWidth: "8",
-                    img: {
-                        path: "node_structure_with_conditions.jpeg",
-                        text: "Diagram of the structure of a node with conditions",
-                        caption: {
-                            text: "Diagram of the structure of a node with conditions"
+                    id: "layout_columns-1",
+                    type: "layout_columns",
+                    columns: [
+                        {
+                            id: "text_paragraph-1",
+                            type: "text_paragraph",
+                            text: "This diagram structure of a node. In this version you can see how content elements or options can be visible or hidden depending on if their conditions are met."
+                        },
+                        {
+                            id: "media_image-1",
+                            type: "media_image",
+                            path: "node_structure_with_conditions.jpeg",
+                            text: "Diagram of the structure of a node with conditions",
+                            caption: {
+                                text: "Diagram of the structure of a node with conditions"
+                            },
+                            colWidth: "8"
                         }
-                    }
+                    ]
                 },
                 {
-                    id: "p-4",
-                    type: "p",
+                    id: "text_paragraph-4",
+                    type: "text_paragraph",
                     text: "Conditions can refer to content or options in the current node, or in any other node in the scenario."
                 }
             ],
@@ -1010,24 +1082,24 @@ let scenario = {
             title: "About the case-notes panel",
             contents: [
                 {
-                    id: "text-main",
-                    type: "p",
+                    id: "text_paragraph-1",
+                    type: "text_paragraph",
                     text: "After you move on from a node, useful information can be recorded in the case notes panel on the right. This allows users to refer back to information they found out earlier in the scenario."
                 },
                 {
-                    id: "text-exclude-from-log",
-                    type: "p",
+                    id: "text_paragraph-2",
+                    type: "text_paragraph",
                     text: "You can exclude either entire nodes, or certain content elements from the case notes, to prevent them from getting too crowded."
                 },
                 {
-                    id: "text-exclude-from-log-demo",
-                    type: "p",
+                    id: "text_paragraph-3",
+                    type: "text_paragraph",
                     text: "For example, when you move on from this node, this paragraph of text will not appear in the case notes as it is set to be excluded.",
                     excludeFromNotes: true
                 },
                 {
-                    id: "text-img-in-case-notes",
-                    type: "p",
+                    id: "text_paragraph-4",
+                    type: "text_paragraph",
                     text: "Certain content will appear differently in the case notes panel compared to the main content panel. For example, images from the main area are entered into the case notes panel with a text description and a link to open the image."
                 }
             ],
@@ -1050,8 +1122,8 @@ let scenario = {
             title: "About the developer panel",
             contents: [
                 {
-                    id: "text-main",
-                    type: "p",
+                    id: "text_paragraph-1",
+                    type: "text_paragraph",
                     text: "At the bottom of the page is a developer panel that provides some useful information while you're creating a scenario. This panel is only visible during scenario development. I'll add more details about this later."
                 }
             ],
@@ -1073,13 +1145,13 @@ let scenario = {
             title: "End",
             contents: [
                 {
-                    id: "p-1",
-                    type: "p",
+                    id: "text_paragraph-1",
+                    type: "text_paragraph",
                     text: "This is the end of the demonstration scenario."
                 },
                 {
-                    id: "ul-1",
-                    type: "ul",
+                    id: "text_bullets-1",
+                    type: "text_bullets",
                     text: "This demonstration has covered:",
                     items: [
                         "That a scenario is made up of nodes which users move through depending on their decision making.",

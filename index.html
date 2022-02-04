@@ -13,7 +13,7 @@
         <div id="header" class="top-banner full-width contentCenter">
             <h1 class="display-1">{{title}}</h1>
             <h2 v-if="subtitle" class="small">{{subtitle}}</h2><br>
-            <button id="btn-fullScreen" @click=toggleFullScreen class="btn btn-sm m-2" ></button>
+            <img src="assets/img/fullScreen.jpg" onclick="app.toggleFullScreen()" id="btn-fullScreen">
         </div>
         <div id="main" class="row">
             <div class="col-md-8">
@@ -28,117 +28,7 @@
                             <div v-for="(content, index) in nodes[node].contents">
                                 <transition name="fade"> <!-- fade in/out for individual contents appearing/disappearing -->
                                     <span v-if="content.visible">
-
-                                        <!--attached heading-->
-                                        <span v-if="content.heading">
-                                            <h3 v-if="content.heading.level == 1">{{content.heading.text}}</h3>
-                                            <h4 v-if="content.heading.level == 2">{{content.heading.text}}</h4>
-                                            <h5 v-if="content.heading.level == 3">{{content.heading.text}}</h5>
-                                        </span>
-                                        
-                                        <!--text-->
-                                        <div v-if="content.type == 'p'">
-                                            <p>
-                                                <strong v-if="content.bold">{{content.text}}</strong>
-                                                <span v-else>{{content.text}}</span>
-                                            </p>
-                                        </div>
-
-                                        <!--emphasis-->
-                                        <div v-if="content.type == 'emp'">
-                                            <h5 class="contentCenter"><i>{{content.text}}</i></h5>
-                                            <br>
-                                        </div>
-
-                                        <!--spacer-->
-                                        <div v-if="content.type == 'spacer'" :style="{ height: content.size + 'vh' }"></div>
-
-                                        <!--heading-->
-                                        <div v-if="content.type == 'h'" :class="{ contentCenter: content.center }">
-                                            <h3 v-if="content.level == 1">{{content.text}}</h3>
-                                            <h4 v-if="content.level == 2">{{content.text}}</h4>
-                                            <h5 v-if="content.level == 3">{{content.text}}</h5>
-                                            <br>
-                                        </div>
-
-                                        <!--link-->
-                                        <div v-if="content.type == 'a'">
-                                            <p><a :href="content.link" target="_blank" rel="noopener noreferrer">{{content.text}}</a></p>
-                                        </div>
-
-                                        <!--unordered list-->
-                                        <div v-if="content.type == 'ul'">
-                                            <span v-if="content.text">{{content.text}}</span>
-                                            <ul>
-                                                <li v-for="item in content.items">{{item}}</li>
-                                            </ul>
-                                        </div>
-
-                                        <!--ordered list-->
-                                        <div v-if="content.type == 'ol'">
-                                            <span v-if="content.text">{{content.text}}</span>
-                                            <ol>
-                                                <li v-for="item in content.items">{{item}}</li>
-                                            </ol>
-                                        </div>
-                                        
-                                        <!--img-->
-                                        <div v-if="content.type == 'img'" class="contentCenter">
-                                            <img class="content-img" :src="'scenario/img/' + content.path" :alt="content.text">
-                                            <div v-if="content.caption">
-                                                <a v-if="content.caption.link" :href="content.caption.link" target="_blank" rel="noopener noreferrer" class="small"><figcaption>{{content.caption.text}}</figcaption></a>
-                                                <figcaption v-else>{{content.caption.text}}</figcaption>
-                                            </div>
-                                            <br>
-                                        </div>
-
-                                        <!--p_img-->
-                                        <div v-if="content.type == 'p_img'" class="row">
-                                            <div class="col">
-                                                <p>{{content.text}}</p>
-                                                <br>
-                                            </div>
-                                            <div class="contentCenter" :class="['col-sm-' + content.imgWidth]">
-                                                <img class="content-img" :src="'scenario/img/' + content.img.path" :alt="content.img.text">
-                                                <div v-if="content.img.caption">
-                                                    <a v-if="content.img.caption.link" :href="content.img.caption.link" target="_blank" rel="noopener noreferrer" class="small"><figcaption>{{content.img.caption.text}}</figcaption></a>
-                                                    <figcaption v-else>{{content.img.caption.text}}</figcaption>
-                                                </div>
-                                                <br>
-                                            </div>
-                                        </div>
-
-                                        <!--textarea-->
-                                        <div v-if="content.type == 'inputTextarea'">
-                                            <label for="input-textarea">{{content.text}}</label>
-                                            <textarea id="input-textarea" v-model="content.userEntry" class="form-control"></textarea><br>
-                                            <div class="full-width contentCenter"><button @click=fn.nodes.contents.inputTextarea.submit(index) class="btn m-2 btn-primary">Submit</button></div><br>
-                                        </div>
-
-                                        <!--checkbox-->
-                                        <div v-if="content.type == 'inputCheckbox'">
-                                            <label for="input-checkboxes">{{content.text}}</label>
-                                            <div id="checkboxes">
-                                                <div v-for="checkbox in content.checkboxes" class="form-check">
-                                                    <input class="form-check-input" type="checkbox" v-model="checkbox.checked" :disabled="content.disabled">
-                                                    <label class="form-check-label">{{checkbox.title}}</label>
-                                                </div>
-                                            </div>
-                                            <div class="full-width contentCenter"><button @click=fn.nodes.contents.inputCheckbox.submit(index) class="btn m-2 btn-primary" :disabled="content.disabled">Submit</button></div><br>
-                                        </div>
-
-                                        <!--radio-->
-                                        <div v-if="content.type == 'inputRadio'">
-                                            <label for="input-radio">{{content.text}}</label>
-                                            <div id="radios">
-                                                <div v-for="radio in content.radios" class="form-check">
-                                                    <input class="form-check-input" type="radio" name="content.id" :value="radio.id" v-model="content.selected" :disabled="content.disabled">
-                                                    <label class="form-check-label">{{radio.title}}</label>
-                                                </div>
-                                            </div>
-                                            <div class="full-width contentCenter"><button @click=fn.nodes.contents.inputRadio.submit(index) class="btn m-2 btn-primary" :disabled="content.disabled">Submit</button></div><br>
-                                        </div>
-
+                                        <component_selector :content="content"></component_selector>
                                     </span>
                                 </transition>
                             </div>
@@ -232,7 +122,14 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- my scripts -->
     <script src="scenario/example.js"></script>
-    <script src="assets/js/app.js"></script>
+    <script src="assets/js/myApp.js"></script>
+    <script src="assets/js/components/text-components.js"></script>
+    <script src="assets/js/components/media-components.js"></script>
+    <script src="assets/js/components/layout-components.js"></script>
+    <script src="assets/js/components/input-components.js"></script>
+    <script src="assets/js/components/component-selector.js"></script>
+    <script src="assets/js/main.js"></script>
+
     <link href="assets/css/style.css" rel="stylesheet">
 </body>
 </html>

@@ -1,6 +1,6 @@
 "use strict";
 
-var RootComponent = { //create the app instance, import scenario specific data from scenario object
+const myApp = Vue.createApp({ //create the app instance, import scenario specific data from scenario object
     el: '#app',
     data() {
         return {
@@ -90,7 +90,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                             console.warn("Unable to find index of contentId", contentId)
                             return false
                         },
-                        p: { 
+                        text_paragraph: { 
                             tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'p'
                                 seen: function(content){ //returns true if object 'content' has been seen
                                     return content.seen
@@ -100,7 +100,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 return "<p>" + content.text + "</p>"
                             }
                         },
-                        a: { 
+                        text_link: { 
                             tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'p'
                                 seen: function(content){ //returns true if object 'content' has been seen
                                     return content.seen
@@ -110,7 +110,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 return "<a href=" + content.link + "target='_blank' rel='noopener noreferrer'>" + content.text + "</a>"
                             }
                         },
-                        h: {
+                        text_heading: {
                             tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'h'
                                 seen: function(content){ //returns true if object 'content' has been seen
                                     return content.seen
@@ -120,7 +120,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 return "<p><strong>" + content.text + "</strong></p>"
                             }
                         },
-                        emp: { 
+                        text_emphasis: { 
                             tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'p'
                                 seen: function(content){ //returns true if object 'content' has been seen
                                     return content.seen
@@ -130,7 +130,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 return "<p>" + content.text + "</p>"
                             }
                         },
-                        ul: {
+                        text_bullets: {
                             tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'h'
                                 seen: function(content){ //returns true if object 'content' has been seen
                                     return content.seen
@@ -143,7 +143,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 return "<p>" + content.text + list + "</p>"
                             }
                         },
-                        ol: {
+                        text_numbers: {
                             tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'h'
                                 seen: function(content){ //returns true if object 'content' has been seen
                                     return content.seen
@@ -156,7 +156,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 return "<p>" + content.text + list + "</p>"
                             }
                         },
-                        img: {
+                        media_image: {
                             tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'img'
                                 seen: function(content){ //returns true if object 'content' has been seen
                                     return content.seen
@@ -166,17 +166,30 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 return "<a href='scenario/img/" + content.path + "' target='_blank' rel='noopener noreferrer'>" + content.text + "</a>"
                             }
                         },
-                        p_img: {
+                        layout_columns: {
                             tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'img'
                                 seen: function(content){ //returns true if object 'content' has been seen
                                     return content.seen
                                 }
                             },
                             getNotes: function(content){ //returns HTML template string as image title text with link to open the image
-                                return "<p>" + content.text + "</p><a href='scenario/img/" + content.img.path + "' target='_blank' rel='noopener noreferrer'>" + content.img.text + "</a>"
+                                let notes = ""
+                                for (let columnIndex in content.columns){
+                                    let column = content.columns[columnIndex]
+                                    notes += app.fn.nodes.contents[column.type].getNotes(column) //if this content object has a getLog method use that, otherwise default to the getNotes method
+                                }
+                                return notes
+                            },
+                            getLog: function(content){ //returns HTML template string as image title text with link to open the image
+                                let log = ""
+                                for (let columnIndex in content.columns){
+                                    let column = content.columns[columnIndex]
+                                    log += (app.fn.nodes.contents[column.type].getLog) ? app.fn.nodes.contents[column.type].getLog(column) : app.fn.nodes.contents[column.type].getNotes(column) //if this content object has a getLog method use that, otherwise default to the getNotes method
+                                }
+                                return log
                             }
                         },
-                        spacer: {
+                        layout_spacer: {
                             tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'img'
                                 seen: function(content){ //returns true if object 'content' has been seen
                                     return content.seen
@@ -186,8 +199,8 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 return ""
                             }
                         },
-                        inputTextarea: {
-                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'inputTextarea'
+                        input_textarea: {
+                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'input_textarea'
                                 seen: function(content){ //returns true if object 'content' has been seen
                                     return content.seen
                                 },
@@ -202,18 +215,18 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                     }
                                 },
                                 scorePercentage: function(content){ //returns the percentage score achieved for object 'content'
-                                    var score = app.fn.nodes.contents.inputTextarea.getScore(content) //fetch the score
+                                    var score = app.fn.nodes.contents.input_textarea.getScore(content) //fetch the score
                                     return (score.achieved/score.possible)*100 //convert to percentage of possible marks
                                 }
                             },
-                            entryTooShort: function(entry){ //returns true if string 'entry' is less than minimum length defined in config for inputTextarea
-                                if (entry.length < app.config.nodes.contents.inputTextarea.minLength) return true
+                            entryTooShort: function(entry){ //returns true if string 'entry' is less than minimum length defined in config for input_textarea
+                                if (entry.length < app.config.nodes.contents.input_textarea.minLength) return true
                             },
                             getFound: function(content){ //returns array of IDs of keyword objects which have been found by user in object 'content'
                                 var found = []
                                 for (var keywordIndex in content.keywords){ //loop through all the keywords in the tested object
                                     var keyword = content.keywords[keywordIndex] //get the current keyword object
-                                    if (app.fn.nodes.contents.inputTextarea.tests.keywordIsFound(content, keyword)) found.push(keyword.id) //if the current keyword object has been found, add its ID to the array to be returned
+                                    if (app.fn.nodes.contents.input_textarea.tests.keywordIsFound(content, keyword)) found.push(keyword.id) //if the current keyword object has been found, add its ID to the array to be returned
                                 }
                                 return found
                             },  
@@ -221,7 +234,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 var missed = []
                                 for (var keywordIndex in content.keywords){ //loop through all the keywords in the tested object
                                     var keyword = content.keywords[keywordIndex] //get the current keyword object
-                                    if (!app.fn.nodes.contents.inputTextarea.tests.keywordIsFound(content, keyword)) missed.push(keyword.id) //if the current keyword object has not been found, add its ID to the array to be returned
+                                    if (!app.fn.nodes.contents.input_textarea.tests.keywordIsFound(content, keyword)) missed.push(keyword.id) //if the current keyword object has not been found, add its ID to the array to be returned
                                 }
                                 return missed
                             },
@@ -233,26 +246,26 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 return responses
                             },
                             getNotes: function(content){ //returns HTML template string representing the object 'content' contribution to the case notes for this node
-                                return "<p>" + app.fn.nodes.contents.inputTextarea.getResponses(content) + "</p>"
+                                return "<p>" + app.fn.nodes.contents.input_textarea.getResponses(content) + "</p>"
                             },
                             getLog: function(content){ //returns HTML template string representing the object 'content' contribution to the log for this node
-                                var missed = app.fn.nodes.contents.inputTextarea.getMissed(content) //gets an array of missed keywords
+                                var missed = app.fn.nodes.contents.input_textarea.getMissed(content) //gets an array of missed keywords
                                 var list = ""
                                 for (var index in missed) list += missed[index] + ", " //create a string of missed keywords separated by , and space
                                 list = list.slice(0,-2) //remove the trailing comma and space from the string of missed keywords
                                 return `
                                     <strong>` + content.text + `</strong><br>
                                     You entered: <i>'` + content.userEntry + `'</i><br>
-                                    You found out: <i>` + app.fn.nodes.contents.inputTextarea.getResponses(content) + `</i><br>
+                                    You found out: <i>` + app.fn.nodes.contents.input_textarea.getResponses(content) + `</i><br>
                                     You could also have considered: <i>` + list + `</i><br>
-                                    Score: ` + app.fn.nodes.contents.inputTextarea.getScore(content).achieved + `/` + app.fn.nodes.contents.inputTextarea.getScore(content).possible
+                                    Score: ` + app.fn.nodes.contents.input_textarea.getScore(content).achieved + `/` + app.fn.nodes.contents.input_textarea.getScore(content).possible
                             },
                             getScore: function(content){ //returns object with possible and achieved scores of the object 'content'
                                 var score = {
                                     possible: 0,
                                     achieved: 0
                                 }
-                                var defaultScore = app.config.nodes.contents.inputTextarea.defaultScore //get the default score from config to use if custom score not defined
+                                var defaultScore = app.config.nodes.contents.input_textarea.defaultScore //get the default score from config to use if custom score not defined
                                 for (var keywordIndex in content.keywords){ //loop through all the keywords
                                     var keywordScore = (content.keywords[keywordIndex].score) ? content.keywords[keywordIndex].score : defaultScore //define the score to be used for this keyword object, use the default score if a custom score is not defined
                                     if (keywordScore > 0) score.possible += keywordScore //only add positive scores to possible as highest score would avoid all negative scores
@@ -260,12 +273,12 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 }
                                 return score
                             },
-                            submit: function(contentIndex){ //called by the @click event of the inputTextarea submit button 
+                            submit: function(contentIndex){ //called by the @click event of the input_textarea submit button 
                                 var node = app.nodes[app.node] // define the current node object
                                 var content = node.contents[contentIndex] //define the current content object
                                 var entry = content.userEntry // entry = the user's entry within the current textarea content
         
-                                if (app.fn.nodes.contents.inputTextarea.entryTooShort(entry)) { // only proceed if entry is long enough
+                                if (app.fn.nodes.contents.input_textarea.entryTooShort(entry)) { // only proceed if entry is long enough
                                     app.fn.alerts.askMore()
                                     return
                                 }
@@ -278,20 +291,20 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                         }
                                     }
             
-                                    if (!app.fn.nodes.contents.inputTextarea.tests.keywordFoundCount(content) > 0) {// only proceed if at least one keyword found
+                                    if (!app.fn.nodes.contents.input_textarea.tests.keywordFoundCount(content) > 0) {// only proceed if at least one keyword found
                                         app.fn.alerts.askMore()
                                         return
                                     }
                                     
-                                    let responses = app.fn.nodes.contents.inputTextarea.getResponses(content)
+                                    let responses = app.fn.nodes.contents.input_textarea.getResponses(content)
                                     if (responses) app.fn.alerts.showResponse(responses) //show the textarea responses for those selected
                                 }
         
                                 app.fn.nodes.updateView() //checks if any content or options on this node should now be shown
                             },
                         },
-                        inputCheckbox: {
-                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'inputCheckbox'
+                        input_checkboxes: {
+                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'input_checkboxes'
                                 seen: function(content){ //returns true if object 'content' has been seen
                                     return content.seen
                                 },
@@ -308,7 +321,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                     }
                                 },
                                 scorePercentage: function(content){ //returns the percentage score achieved for object 'content'
-                                    var score = app.fn.nodes.contents.inputCheckbox.getScore(content) //get the score object
+                                    var score = app.fn.nodes.contents.input_checkboxes.getScore(content) //get the score object
                                     return (score.achieved/score.possible)*100 //convert to percentage
                                 }
                                 
@@ -335,19 +348,19 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 return missed
                             },
                             getNotes: function(content){ //returns HTML template string representing the object 'content' contribution to the case notes for this node
-                                return "<p>" + app.fn.nodes.contents.inputCheckbox.getResponses(content) + "</p>"
+                                return "<p>" + app.fn.nodes.contents.input_checkboxes.getResponses(content) + "</p>"
                             },
                             getLog: function(content){ //returns HTML template string representing the object 'content' contribution to the log for this node
-                                var missed = app.fn.nodes.contents.inputCheckbox.getMissed(content) //get an array of the IDs of missed checkboxes
+                                var missed = app.fn.nodes.contents.input_checkboxes.getMissed(content) //get an array of the IDs of missed checkboxes
                                 var list = ""
                                 for (var index in missed) list += missed[index] + ", " //create string from array of missed checkboxes, separated by , and space
                                 list = list.slice(0,-2) //remove trailing , and space from string of missed checkboxes
                                 return `
                                     <strong>` + content.text + `</strong><br>
-                                    You selected: <i>'` + app.fn.nodes.contents.inputCheckbox.getChecked(content) + `'</i><br>
-                                    You found out: <i>` + app.fn.nodes.contents.inputCheckbox.getResponses(content) + `</i><br>
+                                    You selected: <i>'` + app.fn.nodes.contents.input_checkboxes.getChecked(content) + `'</i><br>
+                                    You found out: <i>` + app.fn.nodes.contents.input_checkboxes.getResponses(content) + `</i><br>
                                     You could also have considered: <i>` + list + `</i><br>
-                                    Score: ` + app.fn.nodes.contents.inputCheckbox.getScore(content).achieved + `/` + app.fn.nodes.contents.inputCheckbox.getScore(content).possible
+                                    Score: ` + app.fn.nodes.contents.input_checkboxes.getScore(content).achieved + `/` + app.fn.nodes.contents.input_checkboxes.getScore(content).possible
                             },
                             getScore: function(content){ //returns object with possible and achieved scores of the object 'content'
                                 var score = {
@@ -355,8 +368,8 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                     achieved: 0
                                 }
                                 var defaultScore = { //get the default scores to be used if custom score not provided
-                                    recommended: app.config.nodes.contents.inputCheckbox.defaultScore.recommended,
-                                    notRecommended: app.config.nodes.contents.inputCheckbox.defaultScore.notRecommended
+                                    recommended: app.config.nodes.contents.input_checkboxes.defaultScore.recommended,
+                                    notRecommended: app.config.nodes.contents.input_checkboxes.defaultScore.notRecommended
                                 }
                                 for (var checkboxIndex in content.checkboxes){ //loop through all the checkboxes
                                     var checkbox = content.checkboxes[checkboxIndex] //define the current checkbox object
@@ -370,16 +383,16 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 }
                                 return score
                             },
-                            submit: function(contentIndex){ //called by the @click event of the inputCheckbox submit button
+                            submit: function(contentIndex){ //called by the @click event of the input_checkboxes submit button
                                 var node = app.nodes[app.node] //define the current node
-                                var content = node.contents[contentIndex] //define the inputCheckbox object
+                                var content = node.contents[contentIndex] //define the input_checkboxes object
         
-                                if (!app.fn.nodes.contents.inputCheckbox.tests.checkedCount(content) > 0) {// only proceed if at least one keyword found
+                                if (!app.fn.nodes.contents.input_checkboxes.tests.checkedCount(content) > 0) {// only proceed if at least one keyword found
                                     app.fn.alerts.checkMore()
                                     return
                                 }
                                 
-                                let responses = app.fn.nodes.contents.inputCheckbox.getResponses(content)
+                                let responses = app.fn.nodes.contents.input_checkboxes.getResponses(content)
                                 if (responses) app.fn.alerts.showResponse(responses) //show the checkbox responses for those selected
                                 
                                 app.fn.nodes.updateView()
@@ -387,8 +400,8 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 content.disabled = true
                             }
                         },
-                        inputRadio: {
-                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'inputRadio'
+                        input_radios: {
+                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'input_radios'
                                 seen: function(content){ //returns true if object 'content' has been seen
                                     return content.seen
                                 },
@@ -399,7 +412,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                     if (content.selected == radioId) return true
                                 },
                                 scorePercentage: function(content){ //returns the percentage score achieved for object 'content'
-                                    var score = app.fn.nodes.contents.inputRadio.getScore(content) //get the score object
+                                    var score = app.fn.nodes.contents.input_radio.getScore(content) //get the score object
                                     return (score.achieved/score.possible)*100 //convert to percentage
                                 }
                                 
@@ -415,27 +428,27 @@ var RootComponent = { //create the app instance, import scenario specific data f
                             },
                             getMissed: function(content){ //returns ID of recommended radio object which has NOT been selected by user in object 'content'
                                 for (var radioIndex in content.radios){ //loop through all the radio objects
-                                    if (!app.fn.nodes.contents.inputRadio.tests.radioIsSelected(content.radios[radioIndex].id) && content.radios[radioIndex].recommended) return content.radios[radioIndex].title //if the current radio object has not been selected but was recommended, return its title
+                                    if (!app.fn.nodes.contents.input_radios.tests.radioIsSelected(content.radios[radioIndex].id) && content.radios[radioIndex].recommended) return content.radios[radioIndex].title //if the current radio object has not been selected but was recommended, return its title
                                 }
                                 return false
                             },
                             getNotes: function(content){ //returns HTML template string representing the object 'content' contribution to the case notes for this node
-                                return "<p>" + app.fn.nodes.contents.inputRadio.getResponse(content) + "</p>"
+                                return "<p>" + app.fn.nodes.contents.input_radios.getResponse(content) + "</p>"
                             },
                             getLog: function(content){ //returns HTML template string representing the object 'content' contribution to the log for this node
-                                var missed = app.fn.nodes.contents.inputRadio.getMissed(content) //get an array of the IDs of missed radio
+                                var missed = app.fn.nodes.contents.input_radios.getMissed(content) //get an array of the IDs of missed radio
                                 return `
                                     <strong>` + content.text + `</strong><br>
-                                    You selected: <i>'` + app.fn.nodes.contents.inputRadio.getSelected(content) + `'</i><br>
-                                    You found out: <i>` + app.fn.nodes.contents.inputRadio.getResponse(content) + `</i><br>
+                                    You selected: <i>'` + app.fn.nodes.contents.input_radios.getSelected(content) + `'</i><br>
+                                    You found out: <i>` + app.fn.nodes.contents.input_radios.getResponse(content) + `</i><br>
                                     You could also have considered: <i>` + missed + `</i><br>
-                                    Score: ` + app.fn.nodes.contents.inputRadio.getScore(content).achieved + `/` + app.fn.nodes.contents.inputRadio.getScore(content).possible
+                                    Score: ` + app.fn.nodes.contents.input_radios.getScore(content).achieved + `/` + app.fn.nodes.contents.input_radios.getScore(content).possible
                             },
                             getScore: function(content){ //returns object with possible and achieved scores of the object 'content'
                                 var score = {possible: 0, achieved: 0}
                                 var defaultScore = { //get the default scores to be used if custom score not provided
-                                    recommended: app.config.nodes.contents.inputRadio.defaultScore.recommended,
-                                    notRecommended: app.config.nodes.contents.inputRadio.defaultScore.notRecommended
+                                    recommended: app.config.nodes.contents.input_radios.defaultScore.recommended,
+                                    notRecommended: app.config.nodes.contents.input_radios.defaultScore.notRecommended
                                 }
                                 for (var radioIndex in content.radios){ //loop through all the radios
                                     var radio = content.radios[radioIndex] //define the current radio object
@@ -449,16 +462,17 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 }
                                 return score
                             },
-                            submit: function(contentIndex){ //called by the @click event of the inputRadio submit button
+                            submit: function(contentIndex){ //called by the @click event of the input_radios submit button
+                                
                                 var node = app.nodes[app.node] //define the current node
-                                var content = node.contents[contentIndex] //define the inputRadio object
-        
-                                if (!app.fn.nodes.contents.inputRadio.tests.selectedCount(content) > 0) {// only proceed if one selected
+                                var content = node.contents[contentIndex] //define the input_radios object
+                                console.log("submit: ", content)
+                                if (!app.fn.nodes.contents.input_radios.tests.selectedCount(content) > 0) {// only proceed if one selected
                                     app.fn.alerts.checkMore()
                                     return
                                 }
         
-                                let responses = app.fn.nodes.contents.inputRadio.getResponse(content)
+                                let responses = app.fn.nodes.contents.input_radios.getResponse(content)
                                 if (responses) app.fn.alerts.showResponse(responses) //show the radio responses for those selected
                                 
                                 app.fn.nodes.updateView()
@@ -541,7 +555,6 @@ var RootComponent = { //create the app instance, import scenario specific data f
                                 if (!option.latestSelection) continue //skip this option if it's not the latest selected
                                 notes.option += option.title //use the title of the latestSelection option
                             }
-                            console.log(notes)
                             return notes
                         }
                     },
@@ -666,8 +679,8 @@ var RootComponent = { //create the app instance, import scenario specific data f
         }
     },
     methods: {
-        testFn: function(){ // temporary function
-
+        testFn: function(msg){ // temporary function
+            console.log("testFn", msg)
         },
         toggleFullScreen: function(){ //toggle in/out of full screen mode
             const elem = document.documentElement;
@@ -689,7 +702,7 @@ var RootComponent = { //create the app instance, import scenario specific data f
                     var content = node.contents[contentIndex] //define the current content object
                     content.seen = false //create 'seen' property for each content object, start as false
                     if (content.type.includes('input')) content.submitCount = 0 //create 'submitCount' property for each content object which is an input, start as 0
-                    if (content.type == 'inputTextarea') content.userEntry = "" //create 'userEntry' property for inputTextarea content type to allow v-bind to work
+                    if (content.type == 'input_textarea') content.userEntry = "" //create 'userEntry' property for input_textarea content type to allow v-bind to work
                     content.disabled = false //create 'disabled' property for each content object, start as false
                     content.visible = false //create 'visible' property for each content object
                 }
@@ -711,12 +724,4 @@ var RootComponent = { //create the app instance, import scenario specific data f
         document.getElementById('loader').setAttribute('cloak', true) //makes the loader animation hidden once app loaded
         document.getElementById('app').removeAttribute('cloak') //makes the app visible once loaded
     }
-}
-
-const createApp = Vue.createApp(RootComponent)
-const app = createApp.mount('#app')
-
-app.node = app.config.development.startNode //set the current node to the requested starting node
-app.nodes[app.node].visitCount++ //arrive event does not run for start node, so increment manually
-app.fn.nodes.updateView() //runs after app created, to ensure appropriate check of conditions and setting seen properties for node 0
-app.transitionActive = false //trigger the fadein
+})
