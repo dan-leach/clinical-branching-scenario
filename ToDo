@@ -4,7 +4,6 @@ General:
     arrow functions?
     semicolons?
     Classes for content elements
-    components for content elements
 
 Content:
     New types:
@@ -16,7 +15,6 @@ Content:
         html - safely!
     add open in new window icon to links
     Allow styling of certain items
-    convert contents to components
     separate out newly found responses
     click on image to zoom ?as modal
 

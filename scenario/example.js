@@ -4,7 +4,7 @@ let scenario = {
     config: {
         development: {
             developerPanelVisible: true,
-            startNode: 0
+            startNode: 11
         },
         nodes: {
             //object of configuration options relating to nodes
@@ -597,7 +597,7 @@ let scenario = {
                                 id: "input_textarea-1"
                             },
                             test: {
-                                methodName: "keywordFoundCount",
+                                methodName: "countSelectedItems",
                                 operator: "<",
                                 require: 3
                             }
@@ -630,7 +630,7 @@ let scenario = {
                                 id: "input_textarea-1"
                             },
                             test: {
-                                methodName: "keywordFoundCount",
+                                methodName: "countSelectedItems",
                                 operator: ">",
                                 require: 2
                             }
@@ -642,7 +642,7 @@ let scenario = {
                     type: "input_textarea",
                     excludeFromNotes: true,
                     text: "Example: Please enter the names of as many of the planets of our solar system as you can:",
-                    keywords: [
+                    items: [
                         {
                             id: "mercury",
                             title: "mercury",

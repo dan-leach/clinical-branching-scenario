@@ -1,5 +1,84 @@
 "use strict";
 
+let activeNode = null
+
+class scenarioElement {
+    constructor(methods){
+        if (methods) for (let name in methods) this[name] = methods[name]
+    }
+    doTest(target, test){
+        try{
+            if (this.hasTest(test.methodName)) {
+                return this[test.methodName](test)
+            } else {
+                throw "Invalid test.methodName: " + test.methodName
+            }
+        } catch (e) {
+            console.log(e)
+            return false;
+        }
+    }
+    hasTest(methodName){
+        if (typeof(this[methodName]) === 'function') return true
+        return false
+    }
+    isSeen() {
+        return true;
+    }
+}
+
+class node extends scenarioElement {
+    constructor(nodeDefinition, methods){
+        super(methods)
+        this.visitCount = 0
+        this.id = nodeDefinition.id
+        this.title = nodeDefinition.title
+        this.contents = []
+        for (let contentIndex in nodeDefinition.contents){
+            let content = nodeDefinition.contents[contentIndex]
+            this.contents.push(new contentElement(content))
+        }
+    }
+    arrive() {
+        this.visitCount++
+        activeNode = this
+    }
+}
+
+class contentElement extends scenarioElement{
+    constructor(content, methods){
+        super(methods)
+    }
+    getNotes(content) {
+        return "<p>" + content.text + "</p>"
+    }
+    getLog(content) {
+        return this.getNotes(content)
+    }
+}
+
+class interactiveElement extends contentElement {
+    constructor(methods){
+        super(methods)
+    }
+    countSelectedItems(content){
+        var count = 0
+        for (var itemIndex in content.items) if (content.items[itemIndex].selected) count++
+        return count
+    }
+    isItemSelected(content, itemId){//returns true if item with id 'item' in object 'content' has been selected
+        for (var itemIndex in content.items) if (content.items[itemIndex].selected && content.items[itemIndex].id == itemId) return true
+        return false
+
+    }
+}
+
+let nodes = []
+
+for (let nodeIndex in scenario.nodes){
+    nodes.push(new node(scenario.nodes[nodeIndex]))
+}
+
 const myApp = Vue.createApp({ //create the app instance, import scenario specific data from scenario object
     el: '#app',
     data() {
@@ -17,7 +96,7 @@ const myApp = Vue.createApp({ //create the app instance, import scenario specifi
             config: scenario.config,
             transitionActive: true,
             node: 0,
-            nodes: scenario.nodes,
+            nodes: parser.nodes,
             fn: { //object containing organised methods
                 alerts: { //methods that create an alert
                     askMore: function(){ //creates an alert to encourage the user to add more to their entry
@@ -90,219 +169,149 @@ const myApp = Vue.createApp({ //create the app instance, import scenario specifi
                             console.warn("Unable to find index of contentId", contentId)
                             return false
                         },
-                        text_paragraph: { 
-                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'p'
-                                seen: function(content){ //returns true if object 'content' has been seen
-                                    return content.seen
-                                }
-                            },
-                            getNotes: function(content){ //returns HTML template string with the with text as paragraph
-                                return "<p>" + content.text + "</p>"
-                            }
-                        },
-                        text_link: { 
-                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'p'
-                                seen: function(content){ //returns true if object 'content' has been seen
-                                    return content.seen
-                                }
-                            },
-                            getNotes: function(content){ //returns HTML template string with the with text as paragraph
-                                return "<a href=" + content.link + "target='_blank' rel='noopener noreferrer'>" + content.text + "</a>"
-                            }
-                        },
-                        text_heading: {
-                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'h'
-                                seen: function(content){ //returns true if object 'content' has been seen
-                                    return content.seen
-                                }
-                            },
-                            getNotes: function(content){ //returns HTML template string with heading as bold text
-                                return "<p><strong>" + content.text + "</strong></p>"
-                            }
-                        },
-                        text_emphasis: { 
-                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'p'
-                                seen: function(content){ //returns true if object 'content' has been seen
-                                    return content.seen
-                                }
-                            },
-                            getNotes: function(content){ //returns HTML template string with the with text as paragraph
-                                return "<p>" + content.text + "</p>"
-                            }
-                        },
-                        text_bullets: {
-                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'h'
-                                seen: function(content){ //returns true if object 'content' has been seen
-                                    return content.seen
-                                }
-                            },
-                            getNotes: function(content){ //returns HTML template string with heading as bold text
+                        text_paragraph: new contentElement(),
+                        text_link: new contentElement(
+                            {getNotes(content) {return "<a href=" + content.link + "target='_blank' rel='noopener noreferrer'>" + content.text + "</a>"}}
+                        ),
+                        text_heading: new contentElement(
+                            {getNotes(content) {return "<p><strong>" + content.text + "</strong></p>"}}
+                        ),
+                        text_emphasis: new contentElement(),
+                        text_bullets: new contentElement(
+                            {getNotes(content) {
                                 var list = "<ul>"
                                 for (var itemIndex in content.items) list += "<li>" + content.items[itemIndex] + "</li>"
                                 list += "</ul>"
                                 return "<p>" + content.text + list + "</p>"
-                            }
-                        },
-                        text_numbers: {
-                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'h'
-                                seen: function(content){ //returns true if object 'content' has been seen
-                                    return content.seen
-                                }
-                            },
-                            getNotes: function(content){ //returns HTML template string with heading as bold text
+                            }}
+                        ),
+                        text_numbers: new contentElement(
+                            {getNotes(content) {
                                 var list = "<ol>"
                                 for (var itemIndex in content.items) list += "<li>" + content.items[itemIndex] + "</li>"
                                 list += "</ol>"
                                 return "<p>" + content.text + list + "</p>"
-                            }
-                        },
-                        media_image: {
-                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'img'
-                                seen: function(content){ //returns true if object 'content' has been seen
-                                    return content.seen
-                                }
-                            },
-                            getNotes: function(content){ //returns HTML template string as image title text with link to open the image
+                            }}
+                        ),
+                        media_image: new contentElement(
+                            {getNotes(content) { //returns HTML template string as image title text with link to open the image
                                 return "<a href='scenario/img/" + content.path + "' target='_blank' rel='noopener noreferrer'>" + content.text + "</a>"
-                            }
-                        },
-                        layout_columns: {
-                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'img'
-                                seen: function(content){ //returns true if object 'content' has been seen
-                                    return content.seen
-                                }
-                            },
-                            getNotes: function(content){ //returns HTML template string as image title text with link to open the image
-                                let notes = ""
-                                for (let columnIndex in content.columns){
-                                    let column = content.columns[columnIndex]
-                                    notes += app.fn.nodes.contents[column.type].getNotes(column) //if this content object has a getLog method use that, otherwise default to the getNotes method
-                                }
-                                return notes
-                            },
-                            getLog: function(content){ //returns HTML template string as image title text with link to open the image
-                                let log = ""
-                                for (let columnIndex in content.columns){
-                                    let column = content.columns[columnIndex]
-                                    log += (app.fn.nodes.contents[column.type].getLog) ? app.fn.nodes.contents[column.type].getLog(column) : app.fn.nodes.contents[column.type].getNotes(column) //if this content object has a getLog method use that, otherwise default to the getNotes method
-                                }
-                                return log
-                            }
-                        },
-                        layout_spacer: {
-                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'img'
-                                seen: function(content){ //returns true if object 'content' has been seen
-                                    return content.seen
-                                }
-                            },
-                            getNotes: function(content){ //returns empty string as notes not required for spacer
-                                return ""
-                            }
-                        },
-                        input_textarea: {
-                            tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'input_textarea'
-                                seen: function(content){ //returns true if object 'content' has been seen
-                                    return content.seen
-                                },
-                                keywordFoundCount: function(content){ //returns the number of keywords in object 'content' that have been found by the user
-                                    var count = 0
-                                    for (var keywordIndex in content.keywords) if (content.keywords[keywordIndex].found) count++
-                                    return count
-                                },
-                                keywordIsFound: function(content, keywordId){ //returns true if keyword with id 'keywordId' in object 'content' has been found
-                                    for (var keywordIndex in content.keywords){
-                                        if (content.keywords[keywordIndex].found && content.keywords[keywordIndex].id == keywordId) return true
+                            }}
+                        ),
+                        layout_columns: new contentElement(
+                            {
+                                getNotes(content){ //returns HTML template string as image title text with link to open the image
+                                    let notes = ""
+                                    for (let columnIndex in content.columns){
+                                        let column = content.columns[columnIndex]
+                                        notes += app.fn.nodes.contents[column.type].getNotes(column) //if this content object has a getLog method use that, otherwise default to the getNotes method
                                     }
+                                    return notes
                                 },
-                                scorePercentage: function(content){ //returns the percentage score achieved for object 'content'
+                                getLog: function(content){ //returns HTML template string as image title text with link to open the image
+                                    let log = ""
+                                    for (let columnIndex in content.columns){
+                                        let column = content.columns[columnIndex]
+                                        log += (app.fn.nodes.contents[column.type].getLog) ? app.fn.nodes.contents[column.type].getLog(column) : app.fn.nodes.contents[column.type].getNotes(column) //if this content object has a getLog method use that, otherwise default to the getNotes method
+                                    }
+                                    return log
+                                }
+                            }
+                        ),
+                        layout_spacer: new contentElement(
+                            {getNotes(content) {return null}}
+                        ),
+                        input_textarea: new contentElement(
+                            {
+                                scorePercentage(content){ //returns the percentage score achieved for object 'content'
                                     var score = app.fn.nodes.contents.input_textarea.getScore(content) //fetch the score
                                     return (score.achieved/score.possible)*100 //convert to percentage of possible marks
-                                }
-                            },
-                            entryTooShort: function(entry){ //returns true if string 'entry' is less than minimum length defined in config for input_textarea
-                                if (entry.length < app.config.nodes.contents.input_textarea.minLength) return true
-                            },
-                            getFound: function(content){ //returns array of IDs of keyword objects which have been found by user in object 'content'
-                                var found = []
-                                for (var keywordIndex in content.keywords){ //loop through all the keywords in the tested object
-                                    var keyword = content.keywords[keywordIndex] //get the current keyword object
-                                    if (app.fn.nodes.contents.input_textarea.tests.keywordIsFound(content, keyword)) found.push(keyword.id) //if the current keyword object has been found, add its ID to the array to be returned
-                                }
-                                return found
-                            },  
-                            getMissed: function(content){ //returns array of IDs of keyword objects which have NOT been found by user in object 'content'
-                                var missed = []
-                                for (var keywordIndex in content.keywords){ //loop through all the keywords in the tested object
-                                    var keyword = content.keywords[keywordIndex] //get the current keyword object
-                                    if (!app.fn.nodes.contents.input_textarea.tests.keywordIsFound(content, keyword)) missed.push(keyword.id) //if the current keyword object has not been found, add its ID to the array to be returned
-                                }
-                                return missed
-                            },
-                            getResponses: function(content){ //returns a string of the responses to keywords which have been found by the user in object 'content'
-                                var responses = ""
-                                for (var keywordIndex in content.keywords){ //loop through all the keywords in the tested object
-                                    if (content.keywords[keywordIndex].found && content.keywords[keywordIndex].response) responses += content.keywords[keywordIndex].response + " " //if the keyword object has been found, add the response to the responses string, plus a space for separation before next
-                                }
-                                return responses
-                            },
-                            getNotes: function(content){ //returns HTML template string representing the object 'content' contribution to the case notes for this node
-                                return "<p>" + app.fn.nodes.contents.input_textarea.getResponses(content) + "</p>"
-                            },
-                            getLog: function(content){ //returns HTML template string representing the object 'content' contribution to the log for this node
-                                var missed = app.fn.nodes.contents.input_textarea.getMissed(content) //gets an array of missed keywords
-                                var list = ""
-                                for (var index in missed) list += missed[index] + ", " //create a string of missed keywords separated by , and space
-                                list = list.slice(0,-2) //remove the trailing comma and space from the string of missed keywords
-                                return `
-                                    <strong>` + content.text + `</strong><br>
-                                    You entered: <i>'` + content.userEntry + `'</i><br>
-                                    You found out: <i>` + app.fn.nodes.contents.input_textarea.getResponses(content) + `</i><br>
-                                    You could also have considered: <i>` + list + `</i><br>
-                                    Score: ` + app.fn.nodes.contents.input_textarea.getScore(content).achieved + `/` + app.fn.nodes.contents.input_textarea.getScore(content).possible
-                            },
-                            getScore: function(content){ //returns object with possible and achieved scores of the object 'content'
-                                var score = {
-                                    possible: 0,
-                                    achieved: 0
-                                }
-                                var defaultScore = app.config.nodes.contents.input_textarea.defaultScore //get the default score from config to use if custom score not defined
-                                for (var keywordIndex in content.keywords){ //loop through all the keywords
-                                    var keywordScore = (content.keywords[keywordIndex].score) ? content.keywords[keywordIndex].score : defaultScore //define the score to be used for this keyword object, use the default score if a custom score is not defined
-                                    if (keywordScore > 0) score.possible += keywordScore //only add positive scores to possible as highest score would avoid all negative scores
-                                    if (content.keywords[keywordIndex].found) score.achieved += keywordScore
-                                }
-                                return score
-                            },
-                            submit: function(contentIndex){ //called by the @click event of the input_textarea submit button 
-                                var node = app.nodes[app.node] // define the current node object
-                                var content = node.contents[contentIndex] //define the current content object
-                                var entry = content.userEntry // entry = the user's entry within the current textarea content
-        
-                                if (app.fn.nodes.contents.input_textarea.entryTooShort(entry)) { // only proceed if entry is long enough
-                                    app.fn.alerts.askMore()
-                                    return
-                                }
-                                
-                                if (content.keywords){ //if there is no keyword object then skip directly to show options
-                                    for (var keywordIndex in content.keywords){ //cycle through each keyword object
-                                        for (var triggerIndex in content.keywords[keywordIndex].triggers){ //cycle through each trigger word of the current keyword object
-                                            var trigger = content.keywords[keywordIndex].triggers[triggerIndex] //get the current trigger word
-                                            if (entry.toLowerCase().includes(trigger)) content.keywords[keywordIndex].found = true //check if trigger word is found in entry (entry.toLowerCase required as includes() is case sensitive)
-                                        }
+                                },
+                                entryTooShort(entry){ //returns true if string 'entry' is less than minimum length defined in config for input_textarea
+                                    if (entry.length < app.config.nodes.contents.input_textarea.minLength) return true
+                                },
+                                getFound(content){ //returns array of IDs of keyword objects which have been found by user in object 'content'
+                                    var found = []
+                                    for (var keywordIndex in content.keywords){ //loop through all the keywords in the tested object
+                                        var keyword = content.keywords[keywordIndex] //get the current keyword object
+                                        if (app.fn.nodes.contents.input_textarea.tests.keywordIsFound(content, keyword)) found.push(keyword.id) //if the current keyword object has been found, add its ID to the array to be returned
                                     }
+                                    return found
+                                },  
+                                getMissed(content){ //returns array of IDs of keyword objects which have NOT been found by user in object 'content'
+                                    var missed = []
+                                    for (var keywordIndex in content.keywords){ //loop through all the keywords in the tested object
+                                        var keyword = content.keywords[keywordIndex] //get the current keyword object
+                                        if (!app.fn.nodes.contents.input_textarea.tests.keywordIsFound(content, keyword)) missed.push(keyword.id) //if the current keyword object has not been found, add its ID to the array to be returned
+                                    }
+                                    return missed
+                                },
+                                getResponses(content){ //returns a string of the responses to keywords which have been found by the user in object 'content'
+                                    var responses = ""
+                                    for (var keywordIndex in content.keywords){ //loop through all the keywords in the tested object
+                                        if (content.keywords[keywordIndex].found && content.keywords[keywordIndex].response) responses += content.keywords[keywordIndex].response + " " //if the keyword object has been found, add the response to the responses string, plus a space for separation before next
+                                    }
+                                    return responses
+                                },
+                                getNotes(content){ //returns HTML template string representing the object 'content' contribution to the case notes for this node
+                                    return "<p>" + app.fn.nodes.contents.input_textarea.getResponses(content) + "</p>"
+                                },
+                                getLog(content){ //returns HTML template string representing the object 'content' contribution to the log for this node
+                                    var missed = app.fn.nodes.contents.input_textarea.getMissed(content) //gets an array of missed keywords
+                                    var list = ""
+                                    for (var index in missed) list += missed[index] + ", " //create a string of missed keywords separated by , and space
+                                    list = list.slice(0,-2) //remove the trailing comma and space from the string of missed keywords
+                                    return `
+                                        <strong>` + content.text + `</strong><br>
+                                        You entered: <i>'` + content.userEntry + `'</i><br>
+                                        You found out: <i>` + app.fn.nodes.contents.input_textarea.getResponses(content) + `</i><br>
+                                        You could also have considered: <i>` + list + `</i><br>
+                                        Score: ` + app.fn.nodes.contents.input_textarea.getScore(content).achieved + `/` + app.fn.nodes.contents.input_textarea.getScore(content).possible
+                                },
+                                getScore(content){ //returns object with possible and achieved scores of the object 'content'
+                                    var score = {
+                                        possible: 0,
+                                        achieved: 0
+                                    }
+                                    var defaultScore = app.config.nodes.contents.input_textarea.defaultScore //get the default score from config to use if custom score not defined
+                                    for (var keywordIndex in content.keywords){ //loop through all the keywords
+                                        var keywordScore = (content.keywords[keywordIndex].score) ? content.keywords[keywordIndex].score : defaultScore //define the score to be used for this keyword object, use the default score if a custom score is not defined
+                                        if (keywordScore > 0) score.possible += keywordScore //only add positive scores to possible as highest score would avoid all negative scores
+                                        if (content.keywords[keywordIndex].found) score.achieved += keywordScore
+                                    }
+                                    return score
+                                },
+                                submit(contentIndex){ //called by the @click event of the input_textarea submit button 
+                                    var node = app.nodes[app.node] // define the current node object
+                                    var content = node.contents[contentIndex] //define the current content object
+                                    var entry = content.userEntry // entry = the user's entry within the current textarea content
             
-                                    if (!app.fn.nodes.contents.input_textarea.tests.keywordFoundCount(content) > 0) {// only proceed if at least one keyword found
+                                    if (app.fn.nodes.contents.input_textarea.entryTooShort(entry)) { // only proceed if entry is long enough
                                         app.fn.alerts.askMore()
                                         return
                                     }
                                     
-                                    let responses = app.fn.nodes.contents.input_textarea.getResponses(content)
-                                    if (responses) app.fn.alerts.showResponse(responses) //show the textarea responses for those selected
-                                }
-        
-                                app.fn.nodes.updateView() //checks if any content or options on this node should now be shown
-                            },
-                        },
+                                    if (content.keywords){ //if there is no keyword object then skip directly to show options
+                                        for (var keywordIndex in content.keywords){ //cycle through each keyword object
+                                            for (var triggerIndex in content.keywords[keywordIndex].triggers){ //cycle through each trigger word of the current keyword object
+                                                var trigger = content.keywords[keywordIndex].triggers[triggerIndex] //get the current trigger word
+                                                if (entry.toLowerCase().includes(trigger)) content.keywords[keywordIndex].found = true //check if trigger word is found in entry (entry.toLowerCase required as includes() is case sensitive)
+                                            }
+                                        }
+                
+                                        if (!app.fn.nodes.contents.input_textarea.tests.keywordFoundCount(content) > 0) {// only proceed if at least one keyword found
+                                            app.fn.alerts.askMore()
+                                            return
+                                        }
+                                        
+                                        let responses = app.fn.nodes.contents.input_textarea.getResponses(content)
+                                        if (responses) app.fn.alerts.showResponse(responses) //show the textarea responses for those selected
+                                    }
+            
+                                    app.fn.nodes.updateView() //checks if any content or options on this node should now be shown
+                                },
+                            }
+                        ),
                         input_checkboxes: {
                             tests: { //tests that can form part of a condition for a content or option object where test target is a content object of type 'input_checkboxes'
                                 seen: function(content){ //returns true if object 'content' has been seen
@@ -630,17 +639,14 @@ const myApp = Vue.createApp({ //create the app instance, import scenario specifi
                                 case "nodes":
                                     condition.target.index = app.fn.nodes.findIndex(condition.target.id) //get the index of the target node object from its id
                                     condition.test.subject = app.nodes[condition.target.index] //create property 'subject' and set it to the targetted node object
-                                    condition.test.method = app.fn.nodes.tests[condition.test.methodName] //get the test method from the methodName
                                     break
                                 case "contents":
                                     condition.target.index = app.fn.nodes.contents.findIndex(condition.target.id, condition.target.nodeIndex) //get the index of the target content object from its id
                                     condition.test.subject = app.nodes[condition.target.nodeIndex].contents[condition.target.index] //create property 'subject' and set it to the targetted content object
-                                    condition.test.method = app.fn.nodes.contents[condition.test.subject.type].tests[condition.test.methodName] //get the test method from the methodName
                                     break
                                 case "options":
                                     condition.target.index = app.fn.nodes.options.findIndex(condition.target.id, condition.target.nodeIndex) //get the index of the target option object from its id
                                     condition.test.subject = app.nodes[condition.target.nodeIndex].options[condition.target.index] //create property 'subject' and set it to the targetted option object
-                                    condition.test.method = app.fn.nodes.options.tests[condition.test.methodName] //get the test method from the methodName
                                     break
                             }
                             app.fn.conditions.runTest(condition)
@@ -720,8 +726,8 @@ const myApp = Vue.createApp({ //create the app instance, import scenario specifi
             }
         }
     },
-    mounted() {
+    mounted(){
         document.getElementById('loader').setAttribute('cloak', true) //makes the loader animation hidden once app loaded
-        document.getElementById('app').removeAttribute('cloak') //makes the app visible once loaded
+document.getElementById('app').removeAttribute('cloak') //makes the app visible once loaded
     }
 })
