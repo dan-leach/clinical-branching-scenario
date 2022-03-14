@@ -12,7 +12,8 @@ const myApp = Vue.createApp({ //create the app instance, import scenario specifi
                 score: {
                     achieved: 0,
                     possible: 0
-                }
+                },
+                state: scenario.state
             },
             config: scenario.config,
             transitionActive: true,
@@ -423,6 +424,14 @@ const myApp = Vue.createApp({ //create the app instance, import scenario specifi
                                 }
                                 return false
                             },
+                            getSetStateValue: function(content){ //returns a string for the 
+                                for (var radioIndex in content.radios){ //loop through all the radio objects in the tested object
+                                    if (content.radios[radioIndex].id == content.selected) {
+                                        return (content.radios[radioIndex].setStateValue) ? content.radios[radioIndex].setStateValue : content.radios[radioIndex].id //if the radio object is selected, return its setStateValue or if not provided, it's id
+                                    }
+                                }
+                                return false
+                            },
                             getSelected: function(content){ //returns ID of radio object which is selected by user in object 'content'
                                 return content.selected
                             },
@@ -466,7 +475,6 @@ const myApp = Vue.createApp({ //create the app instance, import scenario specifi
                                 
                                 var node = app.nodes[app.node] //define the current node
                                 var content = node.contents[contentIndex] //define the input_radios object
-                                console.log("submit: ", content)
                                 if (!app.fn.nodes.contents.input_radios.tests.selectedCount(content) > 0) {// only proceed if one selected
                                     app.fn.alerts.checkMore()
                                     return
@@ -474,6 +482,8 @@ const myApp = Vue.createApp({ //create the app instance, import scenario specifi
         
                                 let responses = app.fn.nodes.contents.input_radios.getResponse(content)
                                 if (responses) app.fn.alerts.showResponse(responses) //show the radio responses for those selected
+                                
+                                app.fn.scenario.state.set(content)
                                 
                                 app.fn.nodes.updateView()
         
@@ -608,6 +618,52 @@ const myApp = Vue.createApp({ //create the app instance, import scenario specifi
                         }
                         app.scenario.score.achieved = score.achieved
                         app.scenario.score.possible = score.possible
+                    },
+                    state: {
+                        set: function(content){
+                            function useSetStateArray(setStateArray){ //iterates over the setState array
+                                for (let objIndex in setStateArray) useSetStateObject(setStateArray[objIndex])
+                            }
+                            function useSetStateObject(setState){ //processes an individual setState object
+                                switch (setState.path.length){ //have to do this longhand as proxy will not allow setting recursively using for in
+                                    case 1:
+                                        app.scenario.state[setState.path[0]] = setState.value
+                                        break
+                                    case 2:
+                                        app.scenario.state[setState.path[0]][setState.path[1]] = setState.value
+                                        break
+                                    case 3:
+                                        app.scenario.state[setState.path[0]][setState.path[1]][setState.path[2]] = setState.value
+                                        break
+                                    case 4:
+                                        app.scenario.state[setState.path[0]][setState.path[1]][setState.path[2]][setState.path[3]] = setState.value
+                                        break
+                                    case 5:
+                                        app.scenario.state[setState.path[0]][setState.path[1]][setState.path[2]][setState.path[3]][setState.path[4]] = setState.value
+                                        break
+                                    case 6:
+                                        app.scenario.state[setState.path[0]][setState.path[1]][setState.path[2]][setState.path[3]][setState.path[4]][setState.path[5]] = setState.value
+                                        break
+                                    case 7:
+                                        app.scenario.state[setState.path[0]][setState.path[1]][setState.path[2]][setState.path[3]][setState.path[4]][setState.path[5]][setState.path[6]] = setState.value
+                                        break
+                                    default:
+                                        throw "State object too deeply nested."
+                                }
+                            }
+                            if (content.setState) useSetStateArray(content.setState) //if the content element has a setState array process this
+                            for (let radioIndex in content.radios) { //if the content element has a radio object which has a setState array process this
+                                let radio = content.radios[radioIndex]
+                                if (radio.setState && radio.id == content.selected){
+                                    useSetStateArray(radio.setState)
+                                }
+                            }
+                        },
+                        tests: {
+                            value: function(subject){
+                                return subject
+                            }
+                        }                        
                     }
                 },
                 conditions: {
@@ -641,6 +697,11 @@ const myApp = Vue.createApp({ //create the app instance, import scenario specifi
                                     condition.target.index = app.fn.nodes.options.findIndex(condition.target.id, condition.target.nodeIndex) //get the index of the target option object from its id
                                     condition.test.subject = app.nodes[condition.target.nodeIndex].options[condition.target.index] //create property 'subject' and set it to the targetted option object
                                     condition.test.method = app.fn.nodes.options.tests[condition.test.methodName] //get the test method from the methodName
+                                    break
+                                case "state":
+                                    condition.test.subject = app.scenario.state
+                                    for (let pathIndex in condition.target.id) condition.test.subject = condition.test.subject[condition.target.id[pathIndex]]
+                                    condition.test.method = app.fn.scenario.state.tests[condition.test.methodName]
                                     break
                             }
                             app.fn.conditions.runTest(condition)
