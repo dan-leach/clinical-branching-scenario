@@ -625,6 +625,7 @@ const myApp = Vue.createApp({ //create the app instance, import scenario specifi
                                 for (let objIndex in setStateArray) useSetStateObject(setStateArray[objIndex])
                             }
                             function useSetStateObject(setState){ //processes an individual setState object
+                                console.log(setState)
                                 switch (setState.path.length){ //have to do this longhand as proxy will not allow setting recursively using for in
                                     case 1:
                                         app.scenario.state[setState.path[0]] = setState.value
