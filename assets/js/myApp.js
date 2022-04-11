@@ -292,7 +292,7 @@ const myApp = Vue.createApp({ //create the app instance, import scenario specifi
                                         }
                                     }
             
-                                    if (!app.fn.nodes.contents.input_textarea.tests.keywordFoundCount(content) > 0) {// only proceed if at least one keyword found
+                                    if (!app.fn.nodes.contents.input_textarea.tests.keywordFoundCount(content) > 0 && content.keywords.length > 0) {// only proceed if at least one keyword found
                                         app.fn.alerts.askMore()
                                         return
                                     }
