@@ -682,7 +682,7 @@ const myApp = Vue.createApp({ //create the app instance, import scenario specifi
                         for (var conditionIndex in el.conditions){ //loop through the conditions
                             var condition = el.conditions[conditionIndex] //define the current condition being evaluated
                             if (!condition.target.in) condition.target.in = "contents" //if array to search in not defined default to 'contents'
-                            condition.target.nodeIndex = (condition.target.nodeName) ? app.fn.nodes.findIndex(condition.target.nodeName) : app.node //if nodeName not given default to current node, has no effect if target in = "nodes"
+                            condition.target.nodeIndex = (condition.target.nodeId) ? app.fn.nodes.findIndex(condition.target.nodeId) : app.node //if nodeId not given default to current node, has no effect if target in = "nodes"
                             switch (condition.target.in){ //need to switch between different arrays to seach within for target
                                 case "nodes":
                                     condition.target.index = app.fn.nodes.findIndex(condition.target.id) //get the index of the target node object from its id

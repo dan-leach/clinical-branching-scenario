@@ -1,6 +1,5 @@
 To do:
 - conditons
-- set state add to input_textarea, input_checkbox, checkbox, input_radios, radio
 - once only (inputs and options)
 - options
 
@@ -249,6 +248,104 @@ Creating a scenario means creating a scenario definition object using JSON. You 
 >>>>>> If `true` will prevent log entries being generated for the content object.
 >>>>>> </details>
 >>>>>>
+conditions start
+>>>>>> <details><summary>conditions</summary>
+>>>>>>
+>>>>>> `array | optional`
+>>>>>>
+>>>>>> Contains condition objects all of which must evaluate to `true` for the content element to be rendered. If one or more condition in the array evaluates to `false` the content element will not be rendered. If not provided then the content element will be rendered.
+>>>>>>>
+>>>>>>> <details><summary>condition</summary>
+>>>>>>>
+>>>>>>> `object | optional`
+>>>>>>>
+>>>>>>> Defines the condition which must evaluate to `true` for the parent content object to be rendered.
+>>>>>>>>
+>>>>>>>> <details><summary>target</summary>
+>>>>>>>>
+>>>>>>>> `object | required`
+>>>>>>>>
+>>>>>>>> Defines the object on which the conditional test is run.
+>>>>>>>>> <details><summary>id</summary>
+>>>>>>>>>
+>>>>>>>>> `string | required`
+>>>>>>>>>
+>>>>>>>>> The id of the object on which the conditional test is run.
+>>>>>>>>> </details>
+>>>>>>>>>
+>>>>>>>>> <details><summary>in</summary>
+>>>>>>>>>
+>>>>>>>>> `string | optional (default: 'contents')`
+>>>>>>>>>
+>>>>>>>>> Defines the array in which to search for the target id. Options:
+>>>>>>>>>
+>>>>>>>>> - `contents` (default if property `in` not defined)
+>>>>>>>>> - `nodes`
+>>>>>>>>> - `options`
+>>>>>>>>> </details>
+>>>>>>>>>
+>>>>>>>>> <details><summary>nodeId</summary>
+>>>>>>>>>
+>>>>>>>>> `string | optional`
+>>>>>>>>>
+>>>>>>>>> The node in which the target object is found. Has no effect if target object is in `nodes`. If undefined defaults to the current node.
+>>>>>>>>> </details>
+>>>>>>>>>
+>>>>>>>> </details>
+>>>>>>>>
+>>>>>>>> <details><summary>test</summary>
+>>>>>>>>
+>>>>>>>> `object | required`
+>>>>>>>>
+>>>>>>>> Defines the test to be performed on the target object.
+>>>>>>>>>
+>>>>>>>>> <details><summary>methodName</summary>
+>>>>>>>>>
+>>>>>>>>> `string | required`
+>>>>>>>>>
+>>>>>>>>> The name of the test to perform. Must be suitable for the target object.
+>>>>>>>>> <br>Tests which can be performed on node objects:
+>>>>>>>>>>
+>>>>>>>>>> <details><summary>visitCount</summary>
+>>>>>>>>>>
+>>>>>>>>>> ***
+>>>>>>>>>> </details>
+>>>>>>>>>>
+>>>>>>>>> <br>Tests which can be performed on text_ objects:
+>>>>>>>>>> <details><summary>seen</summary>
+>>>>>>>>>>
+>>>>>>>>>> ***
+>>>>>>>>>> </details>
+>>>>>>>>>>
+>>>>>>>>> </details>
+>>>>>>>>>
+>>>>>>>>> <details><summary>operator</summary>
+>>>>>>>>>
+>>>>>>>>> `string | optional`
+>>>>>>>>>
+>>>>>>>>> Only required if needed for the chosen `methodName`. Options:
+>>>>>>>>>
+>>>>>>>>> - `>`
+>>>>>>>>> - `<`
+>>>>>>>>> - `=`
+>>>>>>>>>
+>>>>>>>>> See under `methodName` for further details.
+>>>>>>>>> </details>
+>>>>>>>>>
+>>>>>>>>> <details><summary>require</summary>
+>>>>>>>>>
+>>>>>>>>> `string/integer/float | optional`
+>>>>>>>>>
+>>>>>>>>> Only required if needed for the chosen `methodName`. See under `methodName` for further details.
+>>>>>>>>> </details>
+>>>>>>>>>
+>>>>>>>> </details>
+>>>>>>>>
+>>>>>>> </details>
+>>>>>>>
+>>>>>> </details>
+>>>>>>
+conditions end
 >>>>> </details>
 >>>>>
 >>>> *Schema of properties for specific content types:*
@@ -561,7 +658,7 @@ Creating a scenario means creating a scenario definition object using JSON. You 
 >>>>>>>>
 >>>>>>>> `array | optional`
 >>>>>>>>
->>>>>>>> Contains state objects to be set if the keyword is matched. If not defined the state object is not altered by submitting this input_textarea. A keyword setState value takes priority over a input_textarea setState value.
+>>>>>>>> Contains state objects to be set if the keyword is matched. If not defined the state object is not altered by matching this keyword. A keyword setState value takes priority over a setState value for the parent input_textarea.
 >>>>>>>>>
 >>>>>>>>> <details><summary>state</summary>
 >>>>>>>>>
@@ -593,6 +690,44 @@ Creating a scenario means creating a scenario definition object using JSON. You 
 >>>>>>>>>>
 >>>>>>>>> </details>
 >>>>>>>>>
+>>>>>>>> </details>
+>>>>>>>>
+>>>>>>> </details>
+>>>>>>>
+>>>>>> </details>
+>>>>>>
+>>>>>> <details><summary>setState</summary>
+>>>>>>
+>>>>>> `array | optional`
+>>>>>>
+>>>>>> Contains state objects to be set if the once the input_textarea is submitted. If not defined the state object is not altered by submitting this input_textarea. If a keyword is matched which also has a setState object for the same state property, the keyword value takes priority over the input_textarea setState value.
+>>>>>>>
+>>>>>>> <details><summary>state</summary>
+>>>>>>>
+>>>>>>> `object | required (minimum 1)`
+>>>>>>>
+>>>>>>> Defines the state property to update and the new value.
+>>>>>>>>
+>>>>>>>> <details><summary>path</summary>
+>>>>>>>>
+>>>>>>>> `array | required`
+>>>>>>>>
+>>>>>>>> Contains strings which together define the property to be updated. For example, to update `state.user.grade` use `path: ["user","grade"]`.
+>>>>>>>>>
+>>>>>>>>> <details><summary>item</summary>
+>>>>>>>>>
+>>>>>>>>> `string | required (minimum 1)`
+>>>>>>>>>
+>>>>>>>>> Component of the path to the target state property to be updated.
+>>>>>>>>> </details>
+>>>>>>>>>
+>>>>>>>> </details>
+>>>>>>>>
+>>>>>>>> <details><summary>value</summary>
+>>>>>>>>
+>>>>>>>> `string/integer/float | required`
+>>>>>>>>
+>>>>>>>> The value to set the target state property with.
 >>>>>>>> </details>
 >>>>>>>>
 >>>>>>> </details>
@@ -659,6 +794,82 @@ Creating a scenario means creating a scenario definition object using JSON. You 
 >>>>>>>>  The score assigned for selecting this checkbox. Can be positive, negative or 0. If not defined the default score set in the config will be used instead.
 >>>>>>>> </details>
 >>>>>>>>
+>>>>>>>> <details><summary>setState</summary>
+>>>>>>>>
+>>>>>>>> `array | optional`
+>>>>>>>>
+>>>>>>>> Contains state objects to be set if the checkbox is selected. If not defined the state object is not altered by selecting this checkbox. A checkbox setState value takes priority over a setState value for the parent input_checkbox.
+>>>>>>>>>
+>>>>>>>>> <details><summary>state</summary>
+>>>>>>>>>
+>>>>>>>>> `object | required (minimum 1)`
+>>>>>>>>>
+>>>>>>>>> Defines the state property to update and the new value.
+>>>>>>>>>>
+>>>>>>>>>> <details><summary>path</summary>
+>>>>>>>>>>
+>>>>>>>>>> `array | required`
+>>>>>>>>>>
+>>>>>>>>>> Contains strings which together define the property to be updated. For example, to update `state.user.grade` use `path: ["user","grade"]`.
+>>>>>>>>>>>
+>>>>>>>>>>> <details><summary>item</summary>
+>>>>>>>>>>>
+>>>>>>>>>>> `string | required (minimum 1)`
+>>>>>>>>>>>
+>>>>>>>>>>> Component of the path to the target state property to be updated.
+>>>>>>>>>>> </details>
+>>>>>>>>>>>
+>>>>>>>>>> </details>
+>>>>>>>>>>
+>>>>>>>>>> <details><summary>value</summary>
+>>>>>>>>>>
+>>>>>>>>>> `string/integer/float | required`
+>>>>>>>>>>
+>>>>>>>>>> The value to set the target state property with.
+>>>>>>>>>> </details>
+>>>>>>>>>>
+>>>>>>>>> </details>
+>>>>>>>>>
+>>>>>>>> </details>
+>>>>>>>>
+>>>>>>> </details>
+>>>>>>>
+>>>>>> </details>
+>>>>>>
+>>>>>> <details><summary>setState</summary>
+>>>>>>
+>>>>>> `array | optional`
+>>>>>>
+>>>>>> Contains state objects to be set if the once the input_checkbox is submitted. If not defined the state object is not altered by submitting this input_checkbox. If a checkbox is selected which also has a setState object for the same state property, the checkbox value takes priority over the input_checkbox setState value.
+>>>>>>>
+>>>>>>> <details><summary>state</summary>
+>>>>>>>
+>>>>>>> `object | required (minimum 1)`
+>>>>>>>
+>>>>>>> Defines the state property to update and the new value.
+>>>>>>>>
+>>>>>>>> <details><summary>path</summary>
+>>>>>>>>
+>>>>>>>> `array | required`
+>>>>>>>>
+>>>>>>>> Contains strings which together define the property to be updated. For example, to update `state.user.grade` use `path: ["user","grade"]`.
+>>>>>>>>>
+>>>>>>>>> <details><summary>item</summary>
+>>>>>>>>>
+>>>>>>>>> `string | required (minimum 1)`
+>>>>>>>>>
+>>>>>>>>> Component of the path to the target state property to be updated.
+>>>>>>>>> </details>
+>>>>>>>>>
+>>>>>>>> </details>
+>>>>>>>>
+>>>>>>>> <details><summary>value</summary>
+>>>>>>>>
+>>>>>>>> `string/integer/float | required`
+>>>>>>>>
+>>>>>>>> The value to set the target state property with.
+>>>>>>>> </details>
+>>>>>>>>
 >>>>>>> </details>
 >>>>>>>
 >>>>>> </details>
@@ -721,6 +932,82 @@ Creating a scenario means creating a scenario definition object using JSON. You 
 >>>>>>>> `integer | optional`
 >>>>>>>>
 >>>>>>>>  The score assigned for selecting this radio button. Can be positive, negative or 0. If not defined the default score set in the config will be used instead.
+>>>>>>>> </details>
+>>>>>>>>
+>>>>>>>> <details><summary>setState</summary>
+>>>>>>>>
+>>>>>>>> `array | optional`
+>>>>>>>>
+>>>>>>>> Contains state objects to be set if the radio button is selected. If not defined the state object is not altered by selecting this radio button. A radio button setState value takes priority over a setState value for the parent input_radios.
+>>>>>>>>>
+>>>>>>>>> <details><summary>state</summary>
+>>>>>>>>>
+>>>>>>>>> `object | required (minimum 1)`
+>>>>>>>>>
+>>>>>>>>> Defines the state property to update and the new value.
+>>>>>>>>>>
+>>>>>>>>>> <details><summary>path</summary>
+>>>>>>>>>>
+>>>>>>>>>> `array | required`
+>>>>>>>>>>
+>>>>>>>>>> Contains strings which together define the property to be updated. For example, to update `state.user.grade` use `path: ["user","grade"]`.
+>>>>>>>>>>>
+>>>>>>>>>>> <details><summary>item</summary>
+>>>>>>>>>>>
+>>>>>>>>>>> `string | required (minimum 1)`
+>>>>>>>>>>>
+>>>>>>>>>>> Component of the path to the target state property to be updated.
+>>>>>>>>>>> </details>
+>>>>>>>>>>>
+>>>>>>>>>> </details>
+>>>>>>>>>>
+>>>>>>>>>> <details><summary>value</summary>
+>>>>>>>>>>
+>>>>>>>>>> `string/integer/float | required`
+>>>>>>>>>>
+>>>>>>>>>> The value to set the target state property with.
+>>>>>>>>>> </details>
+>>>>>>>>>>
+>>>>>>>>> </details>
+>>>>>>>>>
+>>>>>>>> </details>
+>>>>>>>>
+>>>>>>> </details>
+>>>>>>>
+>>>>>> </details>
+>>>>>>
+>>>>>> <details><summary>setState</summary>
+>>>>>>
+>>>>>> `array | optional`
+>>>>>>
+>>>>>> Contains state objects to be set if the once the input_radios is submitted. If not defined the state object is not altered by submitting this input_radios. If a radio button is selected which also has a setState object for the same state property, the radio button value takes priority over the input_radios setState value.
+>>>>>>>
+>>>>>>> <details><summary>state</summary>
+>>>>>>>
+>>>>>>> `object | required (minimum 1)`
+>>>>>>>
+>>>>>>> Defines the state property to update and the new value.
+>>>>>>>>
+>>>>>>>> <details><summary>path</summary>
+>>>>>>>>
+>>>>>>>> `array | required`
+>>>>>>>>
+>>>>>>>> Contains strings which together define the property to be updated. For example, to update `state.user.grade` use `path: ["user","grade"]`.
+>>>>>>>>>
+>>>>>>>>> <details><summary>item</summary>
+>>>>>>>>>
+>>>>>>>>> `string | required (minimum 1)`
+>>>>>>>>>
+>>>>>>>>> Component of the path to the target state property to be updated.
+>>>>>>>>> </details>
+>>>>>>>>>
+>>>>>>>> </details>
+>>>>>>>>
+>>>>>>>> <details><summary>value</summary>
+>>>>>>>>
+>>>>>>>> `string/integer/float | required`
+>>>>>>>>
+>>>>>>>> The value to set the target state property with.
 >>>>>>>> </details>
 >>>>>>>>
 >>>>>>> </details>
