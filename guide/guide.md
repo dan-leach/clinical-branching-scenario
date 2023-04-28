@@ -248,7 +248,6 @@ Creating a scenario means creating a scenario definition object using JSON. You 
 >>>>>> If `true` will prevent log entries being generated for the content object.
 >>>>>> </details>
 >>>>>>
-conditions start
 >>>>>> <details><summary>conditions</summary>
 >>>>>>
 >>>>>> `array | optional`
@@ -345,7 +344,6 @@ conditions start
 >>>>>>>
 >>>>>> </details>
 >>>>>>
-conditions end
 >>>>> </details>
 >>>>>
 >>>> *Schema of properties for specific content types:*
